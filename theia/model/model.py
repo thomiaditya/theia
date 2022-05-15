@@ -2,33 +2,17 @@
 import os
 import tensorflow as tf
 import numpy as np
-import config
+from model import config
 
-class Model(tf.keras.Model):
+class Model():
     def __init__(self):
         """
         Initialize the model class.
         """
         super(Model, self).__init__()
 
-        self.config = config.model_config
-
-    def call(self, inputs):
-        """
-        This method is called when the model is called.
-        """
-        return self.model(inputs)
-
-    def model(self, inputs):
-        """
-        This method is called when the model is called.
-        """
-        # This is the model definition.
-        inputs = tf.keras.layers.Input(shape=self.config["input_shape"])
-        x = tf.keras.layers.Flatten()(inputs)
-        x = tf.keras.layers.Dense(units=64, activation="relu")(x)
-        x = tf.keras.layers.Dense(units=10, activation="softmax")(x)
-        return x
+        self.config = config.config
+        self.model = config.model_definition
 
     def train(self, train_dataset, val_dataset):
         """
@@ -39,40 +23,24 @@ class Model(tf.keras.Model):
             
             # Iterate over the training data.
             for batch, (images, labels) in enumerate(train_dataset):
-                
                 # Open Gradient Tape.
                 with tf.GradientTape() as tape:
-                    # Forward pass.
-                    predictions = self(images)
                     # Compute the loss.
+                    predictions = self.model(images, training=True)
                     loss = self.config["loss"](labels, predictions)
-
+                
                 # Compute the gradients.
-                gradients = tape.gradient(loss, self.trainable_variables)
-                # Update the weights.
-                self.optimizer.apply_gradients(zip(gradients, self.trainable_variables))
-            
+                gradients = tape.gradient(loss, self.model.trainable_weights)
+                # Apply the gradients.
+                self.config["optimizer"].apply_gradients(zip(gradients, self.model.trainable_weights))
                 # Log the training loss.
-                if batch % 200 == 0:
-                    print("Seen so far: {} samples".format(batch * self.config["batch_size"]))
-                    print("Train Epoch: {}, Batch: {}, Loss: {}".format(epoch, batch, loss.numpy()))
+                print("Epoch: {}, Batch: {}, Loss: {}".format(epoch, batch, loss))
 
             # Iterate over the validation data.
             for batch, (images, labels) in enumerate(val_dataset):
                 # Compute the loss.
-                predictions = self(images)
+                predictions = self.model(images, training=False)
                 loss = self.config["loss"](labels, predictions)
-                # Print the loss.
-                print("Val Epoch: {}, Batch: {}, Loss: {}".format(epoch, batch, loss.numpy()))
-
-    def evaluate(self, test_dataset):
-        """
-        This method is called when the model is evaluated.
-        """
-        # This is the evaluation loop.
-        for batch, (images, labels) in enumerate(test_dataset):
-            # Compute the loss.
-            predictions = self(images)
-            loss = self.config["loss"](labels, predictions)
-            # Print the loss.
-            print("Batch: {}, Loss: {}".format(batch, loss.numpy()))
+                # Log the validation loss.
+                if batch % 200 == 0:
+                    print("Validation Epoch: {}, Batch: {}, Loss: {}".format(epoch, batch, loss.numpy()))
