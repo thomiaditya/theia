@@ -9,7 +9,7 @@ config = {
     "optimizer": keras.optimizers.Adam(learning_rate=0.001),
     "loss": keras.losses.CategoricalCrossentropy(),
     "metrics": [
-        "accuracy"
+        keras.metrics.CategoricalAccuracy()
     ],
     "batch_size": 32,
     "epochs": 10
