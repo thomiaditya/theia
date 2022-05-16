@@ -1,9 +1,10 @@
 # This file will contains the configuration dictionary for the model.
 from tensorflow import keras
+# from wandb import wandb
 
 # This is the configuration dictionary for the model.
 config = {
-    "name": "model",
+    "name": "mnist-handwriting",
     "input_shape": [28, 28, 1],
     "output_shape": 10,
     "optimizer": keras.optimizers.Adam(learning_rate=0.001),
@@ -12,7 +13,10 @@ config = {
         keras.metrics.CategoricalAccuracy()
     ],
     "batch_size": 32,
-    "epochs": 10
+    "epochs": 5,
+    "callbacks": [
+        
+    ],
 }
 
 model_definition = keras.Sequential([

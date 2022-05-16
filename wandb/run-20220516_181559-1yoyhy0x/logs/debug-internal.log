@@ -1,0 +1,199 @@
+2022-05-16 18:16:02,062 INFO    MainThread:14960 [internal.py:wandb_internal():90] W&B internal server running at pid: 14960, started at: 2022-05-16 18:16:02.062034
+2022-05-16 18:16:02,065 INFO    WriterThread:14960 [datastore.py:open_for_write():75] open: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\run-1yoyhy0x.wandb
+2022-05-16 18:16:02,070 DEBUG   SenderThread:14960 [sender.py:send():232] send: header
+2022-05-16 18:16:02,071 DEBUG   SenderThread:14960 [sender.py:send():232] send: run
+2022-05-16 18:16:02,803 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: check_version
+2022-05-16 18:16:02,815 INFO    SenderThread:14960 [dir_watcher.py:__init__():197] watching files in: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files
+2022-05-16 18:16:02,816 INFO    SenderThread:14960 [sender.py:_start_run_threads():811] run started: 1yoyhy0x with start time 1652699759
+2022-05-16 18:16:02,816 DEBUG   SenderThread:14960 [sender.py:send():232] send: summary
+2022-05-16 18:16:02,817 INFO    SenderThread:14960 [sender.py:_save_file():948] saving file wandb-summary.json with policy end
+2022-05-16 18:16:02,818 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: check_version
+2022-05-16 18:16:02,961 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: run_start
+2022-05-16 18:16:03,833 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_created():244] file/dir created: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-summary.json
+2022-05-16 18:16:07,913 DEBUG   HandlerThread:14960 [meta.py:__init__():35] meta init
+2022-05-16 18:16:07,913 DEBUG   HandlerThread:14960 [meta.py:__init__():49] meta init done
+2022-05-16 18:16:07,913 DEBUG   HandlerThread:14960 [meta.py:probe():209] probe
+2022-05-16 18:16:08,035 DEBUG   HandlerThread:14960 [meta.py:_setup_git():199] setup git
+2022-05-16 18:16:08,344 DEBUG   HandlerThread:14960 [meta.py:_setup_git():206] setup git done
+2022-05-16 18:16:08,344 DEBUG   HandlerThread:14960 [meta.py:_save_pip():53] save pip
+2022-05-16 18:16:08,347 DEBUG   HandlerThread:14960 [meta.py:_save_pip():67] save pip done
+2022-05-16 18:16:08,347 DEBUG   HandlerThread:14960 [meta.py:probe():247] probe done
+2022-05-16 18:16:08,356 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:16:08,359 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:16:08,958 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_created():244] file/dir created: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-metadata.json
+2022-05-16 18:16:08,958 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_created():244] file/dir created: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\output.log
+2022-05-16 18:16:08,959 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_created():244] file/dir created: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\requirements.txt
+2022-05-16 18:16:10,977 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\output.log
+2022-05-16 18:16:18,057 DEBUG   SenderThread:14960 [sender.py:send():232] send: telemetry
+2022-05-16 18:16:18,057 DEBUG   SenderThread:14960 [sender.py:send():232] send: files
+2022-05-16 18:16:18,057 INFO    SenderThread:14960 [sender.py:_save_file():948] saving file wandb-metadata.json with policy now
+2022-05-16 18:16:18,915 INFO    Thread-17 :14960 [upload_job.py:push():132] Uploaded file C:\Windows\TEMP\tmp92btmhrgwandb\36sv60n6-wandb-metadata.json
+2022-05-16 18:16:28,007 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:16:28,007 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:16:33,185 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\config.yaml
+2022-05-16 18:16:39,127 DEBUG   SenderThread:14960 [sender.py:send():232] send: stats
+2022-05-16 18:16:43,332 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:16:43,333 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:16:51,588 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: partial_history
+2022-05-16 18:16:51,589 DEBUG   SenderThread:14960 [sender.py:send():232] send: history
+2022-05-16 18:16:51,590 DEBUG   SenderThread:14960 [sender.py:send():232] send: summary
+2022-05-16 18:16:51,592 INFO    SenderThread:14960 [sender.py:_save_file():948] saving file wandb-summary.json with policy end
+2022-05-16 18:16:52,315 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-summary.json
+2022-05-16 18:16:52,316 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\output.log
+2022-05-16 18:16:58,658 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:16:58,659 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:17:11,585 DEBUG   SenderThread:14960 [sender.py:send():232] send: stats
+2022-05-16 18:17:13,974 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:17:13,974 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:17:19,205 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: partial_history
+2022-05-16 18:17:19,206 DEBUG   SenderThread:14960 [sender.py:send():232] send: history
+2022-05-16 18:17:19,206 DEBUG   SenderThread:14960 [sender.py:send():232] send: summary
+2022-05-16 18:17:19,208 INFO    SenderThread:14960 [sender.py:_save_file():948] saving file wandb-summary.json with policy end
+2022-05-16 18:17:19,495 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-summary.json
+2022-05-16 18:17:20,501 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\output.log
+2022-05-16 18:17:29,334 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:17:29,334 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:17:43,971 DEBUG   SenderThread:14960 [sender.py:send():232] send: stats
+2022-05-16 18:17:44,681 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:17:44,681 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:17:46,268 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: partial_history
+2022-05-16 18:17:46,268 DEBUG   SenderThread:14960 [sender.py:send():232] send: history
+2022-05-16 18:17:46,269 DEBUG   SenderThread:14960 [sender.py:send():232] send: summary
+2022-05-16 18:17:46,270 INFO    SenderThread:14960 [sender.py:_save_file():948] saving file wandb-summary.json with policy end
+2022-05-16 18:17:46,630 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-summary.json
+2022-05-16 18:17:48,656 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\output.log
+2022-05-16 18:18:00,009 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:18:00,009 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:18:14,721 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: partial_history
+2022-05-16 18:18:14,722 DEBUG   SenderThread:14960 [sender.py:send():232] send: history
+2022-05-16 18:18:14,723 DEBUG   SenderThread:14960 [sender.py:send():232] send: summary
+2022-05-16 18:18:14,727 INFO    SenderThread:14960 [sender.py:_save_file():948] saving file wandb-summary.json with policy end
+2022-05-16 18:18:14,799 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-summary.json
+2022-05-16 18:18:15,353 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:18:15,354 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:18:16,708 DEBUG   SenderThread:14960 [sender.py:send():232] send: stats
+2022-05-16 18:18:16,816 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\output.log
+2022-05-16 18:18:30,670 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: stop_status
+2022-05-16 18:18:30,670 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: stop_status
+2022-05-16 18:18:42,143 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: partial_history
+2022-05-16 18:18:42,144 DEBUG   SenderThread:14960 [sender.py:send():232] send: history
+2022-05-16 18:18:42,145 DEBUG   SenderThread:14960 [sender.py:send():232] send: summary
+2022-05-16 18:18:42,148 INFO    SenderThread:14960 [sender.py:_save_file():948] saving file wandb-summary.json with policy end
+2022-05-16 18:18:42,149 DEBUG   SenderThread:14960 [sender.py:send():232] send: telemetry
+2022-05-16 18:18:42,750 DEBUG   SenderThread:14960 [sender.py:send():232] send: exit
+2022-05-16 18:18:42,750 INFO    SenderThread:14960 [sender.py:send_exit():368] handling exit code: 0
+2022-05-16 18:18:42,750 INFO    SenderThread:14960 [sender.py:send_exit():370] handling runtime: 159
+2022-05-16 18:18:42,751 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:42,752 INFO    SenderThread:14960 [sender.py:_save_file():948] saving file wandb-summary.json with policy end
+2022-05-16 18:18:42,752 INFO    SenderThread:14960 [sender.py:send_exit():376] send defer
+2022-05-16 18:18:42,752 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:42,753 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:42,753 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 0
+2022-05-16 18:18:42,753 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:42,754 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 0
+2022-05-16 18:18:42,754 INFO    SenderThread:14960 [sender.py:transition_state():389] send defer: 1
+2022-05-16 18:18:42,754 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:42,754 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 1
+2022-05-16 18:18:42,821 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:42,821 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 1
+2022-05-16 18:18:42,821 INFO    SenderThread:14960 [sender.py:transition_state():389] send defer: 2
+2022-05-16 18:18:42,821 DEBUG   SenderThread:14960 [sender.py:send():232] send: stats
+2022-05-16 18:18:42,822 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:42,822 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 2
+2022-05-16 18:18:42,822 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:42,822 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 2
+2022-05-16 18:18:42,822 INFO    SenderThread:14960 [sender.py:transition_state():389] send defer: 3
+2022-05-16 18:18:42,823 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:42,823 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 3
+2022-05-16 18:18:42,823 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:42,823 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 3
+2022-05-16 18:18:42,823 INFO    SenderThread:14960 [sender.py:transition_state():389] send defer: 4
+2022-05-16 18:18:42,824 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:42,824 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 4
+2022-05-16 18:18:42,824 DEBUG   SenderThread:14960 [sender.py:send():232] send: summary
+2022-05-16 18:18:42,848 INFO    SenderThread:14960 [sender.py:_save_file():948] saving file wandb-summary.json with policy end
+2022-05-16 18:18:42,848 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:42,848 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 4
+2022-05-16 18:18:42,849 INFO    SenderThread:14960 [sender.py:transition_state():389] send defer: 5
+2022-05-16 18:18:42,849 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:42,849 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 5
+2022-05-16 18:18:42,849 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:42,849 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 5
+2022-05-16 18:18:42,868 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:42,973 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-summary.json
+2022-05-16 18:18:42,974 INFO    Thread-11 :14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\output.log
+2022-05-16 18:18:43,194 INFO    SenderThread:14960 [sender.py:transition_state():389] send defer: 6
+2022-05-16 18:18:43,194 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:43,195 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:43,195 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 6
+2022-05-16 18:18:43,195 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:43,195 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 6
+2022-05-16 18:18:43,195 INFO    SenderThread:14960 [dir_watcher.py:finish():312] shutting down directory watcher
+2022-05-16 18:18:43,305 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:43,983 INFO    SenderThread:14960 [dir_watcher.py:_on_file_modified():257] file/dir modified: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\config.yaml
+2022-05-16 18:18:43,984 INFO    SenderThread:14960 [dir_watcher.py:finish():342] scan: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files
+2022-05-16 18:18:43,984 INFO    SenderThread:14960 [dir_watcher.py:finish():356] scan save: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\config.yaml config.yaml
+2022-05-16 18:18:43,985 INFO    SenderThread:14960 [dir_watcher.py:finish():356] scan save: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\output.log output.log
+2022-05-16 18:18:43,986 INFO    SenderThread:14960 [dir_watcher.py:finish():356] scan save: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\requirements.txt requirements.txt
+2022-05-16 18:18:43,990 INFO    SenderThread:14960 [dir_watcher.py:finish():356] scan save: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-metadata.json wandb-metadata.json
+2022-05-16 18:18:43,993 INFO    SenderThread:14960 [dir_watcher.py:finish():356] scan save: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-summary.json wandb-summary.json
+2022-05-16 18:18:43,997 INFO    SenderThread:14960 [sender.py:transition_state():389] send defer: 7
+2022-05-16 18:18:43,997 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:43,998 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:44,001 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 7
+2022-05-16 18:18:44,002 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:44,002 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 7
+2022-05-16 18:18:44,002 INFO    SenderThread:14960 [file_pusher.py:finish():145] shutting down file pusher
+2022-05-16 18:18:44,102 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:44,102 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:44,208 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:44,208 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:44,313 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:44,314 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:44,419 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:44,420 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:44,539 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:44,540 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:44,645 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:44,646 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:44,737 INFO    Thread-18 :14960 [upload_job.py:push():132] Uploaded file G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\config.yaml
+2022-05-16 18:18:44,751 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:44,751 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:44,770 INFO    Thread-19 :14960 [upload_job.py:push():132] Uploaded file G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\output.log
+2022-05-16 18:18:44,772 INFO    Thread-20 :14960 [upload_job.py:push():132] Uploaded file G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\requirements.txt
+2022-05-16 18:18:44,780 INFO    Thread-21 :14960 [upload_job.py:push():132] Uploaded file G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\files\wandb-summary.json
+2022-05-16 18:18:44,867 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:44,867 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:44,989 INFO    Thread-10 :14960 [sender.py:transition_state():389] send defer: 8
+2022-05-16 18:18:44,989 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:44,990 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:44,990 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:44,990 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 8
+2022-05-16 18:18:44,991 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:44,991 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 8
+2022-05-16 18:18:45,094 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:46,224 INFO    SenderThread:14960 [sender.py:transition_state():389] send defer: 9
+2022-05-16 18:18:46,225 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:46,225 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:46,225 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 9
+2022-05-16 18:18:46,226 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:46,226 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 9
+2022-05-16 18:18:46,226 INFO    SenderThread:14960 [sender.py:transition_state():389] send defer: 10
+2022-05-16 18:18:46,227 DEBUG   SenderThread:14960 [sender.py:send():232] send: final
+2022-05-16 18:18:46,227 DEBUG   SenderThread:14960 [sender.py:send():232] send: footer
+2022-05-16 18:18:46,228 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: defer
+2022-05-16 18:18:46,228 INFO    HandlerThread:14960 [handler.py:handle_request_defer():164] handle defer: 10
+2022-05-16 18:18:46,228 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: defer
+2022-05-16 18:18:46,228 INFO    SenderThread:14960 [sender.py:send_request_defer():385] handle sender defer: 10
+2022-05-16 18:18:46,342 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: poll_exit
+2022-05-16 18:18:46,343 DEBUG   SenderThread:14960 [sender.py:send_request():246] send_request: poll_exit
+2022-05-16 18:18:46,343 INFO    SenderThread:14960 [file_pusher.py:join():150] waiting for file pusher
+2022-05-16 18:18:47,065 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: sampled_history
+2022-05-16 18:18:47,066 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: get_summary
+2022-05-16 18:18:47,067 DEBUG   HandlerThread:14960 [handler.py:handle_request():141] handle_request: shutdown
+2022-05-16 18:18:47,067 INFO    HandlerThread:14960 [handler.py:finish():806] shutting down handler
+2022-05-16 18:18:47,232 INFO    WriterThread:14960 [datastore.py:close():279] close: G:\all-project\theia\wandb\run-20220516_181559-1yoyhy0x\run-1yoyhy0x.wandb
+2022-05-16 18:18:47,955 INFO    SenderThread:14960 [sender.py:finish():1110] shutting down sender
+2022-05-16 18:18:47,955 INFO    SenderThread:14960 [file_pusher.py:finish():145] shutting down file pusher
+2022-05-16 18:18:47,955 INFO    SenderThread:14960 [file_pusher.py:join():150] waiting for file pusher
+2022-05-16 18:18:47,957 INFO    MainThread:14960 [internal.py:handle_exit():80] Internal process exited

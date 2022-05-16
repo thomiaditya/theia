@@ -1,0 +1,7 @@
+
+Start training the model ...
+epoch 1: loss: 0.3035 categorical_accuracy: 0.9241  val_loss: 0.1222 val_categorical_accuracy: 0.9594
+epoch 2: loss: 0.2282 categorical_accuracy: 0.9656  val_loss: 0.1155 val_categorical_accuracy: 0.9690
+epoch 3: loss: 0.1552 categorical_accuracy: 0.9755  val_loss: 0.1143 val_categorical_accuracy: 0.9703
+epoch 4: loss: 0.1043 categorical_accuracy: 0.9813  val_loss: 0.1326 val_categorical_accuracy: 0.9739
+epoch 5: loss: 0.0870 categorical_accuracy: 0.9856  val_loss: 0.0794 val_categorical_accuracy: 0.9759
