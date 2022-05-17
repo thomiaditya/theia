@@ -39,6 +39,9 @@ class Model():
         if self.config["checkpoint_state"] != "no_checkpoint" and self.config["use_wandb"] and id is None:
             print("\033[93mWARNING: Checkpoint is enabled but no id was given. This will cause the model to be saved on wandb with the same run-id as the checkpoint.\033[0m")
 
+        # Check if wandb is enabled and initialize the wandb object.
+        self.check_wandb_and_initilize()
+
         self.history = tf.keras.callbacks.History()
         self.callbacks.append(self.history)
 
@@ -62,13 +65,16 @@ class Model():
 
                 print("\033[92mWandb initialized with project name: {} and id: {} WITHOUT checkpoint.\033[0m".format(self.config["name"], self.id))
 
-    def wandb_log(self, logs):
+    def wandb_log(self, logs, message = None):
         """
         Log the given logs to wandb.
         """
         # Log the given logs to wandb.
-        if self.config["use_wandb"]:
-            wandb.log(logs)
+        if not self.config["use_wandb"]:
+            return
+
+        wandb.log(logs)
+        print("\033[92mLogged to wandb.\033[0m")
 
     def compile_metrics(self):
         """
@@ -88,9 +94,6 @@ class Model():
 
         # Check if use wandb or not
         use_wandb = self.config["use_wandb"]
-
-        # Check if wandb is enabled and initialize the wandb object.
-        self.check_wandb_and_initilize()
         
         # Load all the callbacks.
         for callback in self.config["callbacks"]:
@@ -295,7 +298,7 @@ class Model():
         # Log to user that the checkpoint callback was added using yellow color.
         print("\033[33mCheckpoint callback added. The model will be saved every epoch in {}.\033[0m".format(self.config["checkpoint_dir"]))
     
-    def predict(self, xs, batch_size=None, verbose=False):
+    def predict(self, x, batch_size=None, verbose=False):
         """
         This method is used to predict the y for the given x.
         """
@@ -303,14 +306,10 @@ class Model():
         if batch_size is None:
             batch_size = self.config["batch_size"]
 
-        # Iterate over the dataset.
-        predictions = []
-        for batch, (x, y) in enumerate(xs):
-            # Compute the predictions.
-            predictions.append(self.model(x, training=False))
+        # Predict the y for the given x.
+        predictions = self.model.predict(x)
 
-        # Return the predictions.
-        return np.concatenate(predictions, axis=0)
+        return predictions
     
     def load(self, path = None):
         """

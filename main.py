@@ -4,6 +4,7 @@ import tensorflow as tf
 import numpy as np
 from theia.model.model import Model
 import tensorflow_datasets as tfds
+import wandb
 
 model = Model()
 
@@ -22,6 +23,18 @@ test_data = test_data.batch(32)
 
 model.load()
 
-print(model.predict(test_data))
+images = test_data.take(1)
+
+# Iterate through the data and send to wandb for visualization
+images_sent = []
+for image, label in images:
+  for i, img in enumerate(image):
+    images_sent.append(wandb.Image(img.numpy(), caption="Label: {}, Prediction: {}".format(np.argmax(label[i]), np.argmax(model.predict(np.expand_dims(img.numpy(), axis=0))))))
+
+print(len(images_sent))
+
+model.wandb_log({
+  "image_predictions": images_sent
+})
 
 model.save()
