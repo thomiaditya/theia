@@ -11,9 +11,10 @@ from datetime import datetime
 from uuid import uuid4
 
 # TODO: Create prediction function that can be used to make predictions on new data.
+# TODO: Id is a unique identifier for the model + the id from config.
 
 class Model():
-    def __init__(self, id = None):
+    def __init__(self):
         """
         Initialize the model class.
         """
@@ -24,10 +25,10 @@ class Model():
         self.callbacks = tf.keras.callbacks.CallbackList(None, add_history=True)
 
         # Set the model id.
-        if id is None:
+        if self.config["id"] is None:
             self.id = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + "_" + str(uuid4())[:8]
         else:
-            self.id = id
+            self.id = self.config["id"]
         
         # Set checkpoint.
         if self.config["checkpoint_state"] != "no_checkpoint":
@@ -122,7 +123,7 @@ class Model():
             print("\033[33mNot using Wandb, every logs will be printed to the console.\033[0m")
 
         # Use the alive progress bar to show the progress of the training.
-        with alive_bar(num_batches * self.config["epochs"], ctrl_c=False, manual=False, dual_line=True, spinner="dots_waves") as bar:
+        with alive_bar(num_batches * self.config["epochs"], ctrl_c=False, manual=False, dual_line=True, spinner="pulse") as bar:
 
             # This is the training loop.
             for epoch in range(self.config["epochs"]):
@@ -144,12 +145,11 @@ class Model():
                     bar.text = metrics_string
 
                     # Update metrics string with the new metrics.
-                    if batch % 100 == 0:
-                        metrics_string = "loss: {:.4f} ".format(loss.numpy())
-                        metrics_dict["loss"] = loss.numpy()
-                        for metric in self.config["metrics"]:
-                            metrics_string += "{}: {:.4f} ".format(metric.name, metric.result())
-                            metrics_dict[metric.name] = metric.result()
+                    metrics_string = "loss: {:.4f} ".format(loss.numpy())
+                    metrics_dict["loss"] = loss.numpy()
+                    for metric in self.config["metrics"]:
+                        metrics_string += "{}: {:.4f} ".format(metric.name, metric.result())
+                        metrics_dict[metric.name] = metric.result()
 
                     # Update the progress bar loading.
                     bar()
@@ -180,21 +180,18 @@ class Model():
                     bar.text = val_metrics_string
 
                     # Update the metrics string with the new metrics.
-                    if batch % 100 == 0:
-                        val_metrics_string  = "val_loss: {:.4f} ".format(loss.numpy())
-                        metrics_dict["val_loss"] = loss.numpy()
-                        for metric in self.config["metrics"]:
-                            val_metrics_string += "val_{}: {:.4f} ".format(metric.name, metric.result())
-                            metrics_dict["val_{}".format(metric.name)] = metric.result()
+                    val_metrics_string  = "val_loss: {:.4f} ".format(loss.numpy())
+                    metrics_dict["val_loss"] = loss.numpy()
+                    for metric in self.config["metrics"]:
+                        val_metrics_string += "val_{}: {:.4f} ".format(metric.name, metric.result())
+                        metrics_dict["val_{}".format(metric.name)] = metric.result()
+
+                    # Add images to the wandb.
+                    if use_wandb:
+                        metrics_dict["images"] = wandb.Image(images, caption="Label: {}, Prediction: {}".format(labels, predictions))
 
                     # Update the progress bar.
-                    # bar(counter / num_batches)
-                    # counter += 1
                     bar()
-
-                    # If wandb is used, log the metrics.
-                    # if use_wandb and batch % log_wandb_on == 0 and not log_on_epoch_end:
-                    #     wandb.log(metrics_dict)
 
                     self.callbacks.on_test_batch_end(batch, metrics_dict)
                     self.callbacks.on_batch_end(batch, metrics_dict)
@@ -251,13 +248,13 @@ class Model():
 
         return loss, predictions
 
-    def save(self, dir_path):
+    def save(self):
         """
         Save the model to the given path.
         """
 
         # Create the model directory.
-        model_path = os.path.join(dir_path, "saved_model", self.config["name"], self.id)
+        model_path = os.path.join(self.config["save_dir"], self.config["name"], self.id)
 
         # Create directory for the model.
         if not os.path.exists(model_path):

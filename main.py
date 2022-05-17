@@ -5,7 +5,7 @@ import numpy as np
 from theia.model.model import Model
 import tensorflow_datasets as tfds
 
-model = Model(id="8298747324-thomi")
+model = Model()
 
 # Load the data
 (train_data, test_data), info = tfds.load("mnist", split=["train", "test"], as_supervised=True, with_info=True)
@@ -29,4 +29,4 @@ test_data = test_data.batch(32)
 #   print("label shape:", label.numpy().shape)
 
 model.train(train_data, test_data)
-model.save("G:\\all-project\\theia\\history")
+model.save()
