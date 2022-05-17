@@ -1,6 +1,6 @@
 # This file will contains the configuration dictionary for the model.
 from tensorflow import keras
-# from wandb import wandb
+import os
 
 # This is the configuration dictionary for the model.
 config = {
@@ -13,10 +13,10 @@ config = {
         keras.metrics.CategoricalAccuracy()
     ],
     "batch_size": 32,
-    "epochs": 5,
+    "epochs": 2,
     "callbacks": [
-        
     ],
+    "checkpoint_dir": "history",
 }
 
 model_definition = keras.Sequential([

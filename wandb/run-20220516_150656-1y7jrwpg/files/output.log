@@ -1,6 +1,0 @@
-
-on 2188: epoch 1: loss: 0.2889 categorical_accuracy: 0.9241  val_loss: 0.0911 val_categorical_accuracy: 0.9607
-on 2188: epoch 2: loss: 0.2002 categorical_accuracy: 0.9657  val_loss: 0.0656 val_categorical_accuracy: 0.9681
-on 2188: epoch 3: loss: 0.1501 categorical_accuracy: 0.9757  val_loss: 0.0580 val_categorical_accuracy: 0.9727
-on 2188: epoch 4: loss: 0.1090 categorical_accuracy: 0.9817  val_loss: 0.0629 val_categorical_accuracy: 0.9734
-on 2188: epoch 5: loss: 0.0766 categorical_accuracy: 0.9856  val_loss: 0.0592 val_categorical_accuracy: 0.9761

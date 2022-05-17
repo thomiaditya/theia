@@ -2,7 +2,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-from model.model import Model
+from theia.model.model import Model
 import tensorflow_datasets as tfds
 
 model = Model()
@@ -28,4 +28,5 @@ test_data = test_data.batch(32)
 #   print("image shape: ", image.numpy().shape)
 #   print("label shape:", label.numpy().shape)
 
-model.train(train_data, test_data, use_wandb=False)
+model.train(train_data, test_data, use_wandb=False, checkpoint_on_epoch_end=True)
+model.save("G:\\all-project\\theia\\history")

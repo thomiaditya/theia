@@ -1,3 +1,0 @@
-
-epoch 1: loss: 0.2975 categorical_accuracy: 0.9246  val_loss: 0.0963 val_categorical_accuracy: 0.9604
-epoch 2: loss: 0.2293 categorical_accuracy: 0.9661  val_loss: 0.1088 val_categorical_accuracy: 0.9685

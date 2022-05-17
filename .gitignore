@@ -7,6 +7,8 @@
 [Ll]ib64
 [Ll]ocal
 [Ss]cripts
+wandb
+history
 pyvenv.cfg
 .venv
 pip-selfcheck.json
