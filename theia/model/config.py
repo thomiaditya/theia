@@ -14,9 +14,8 @@ config = {
         keras.metrics.CategoricalAccuracy()
     ],
     "batch_size": 32,
-    "epochs": 10,
-    "callbacks": [
-    ],
+    "epochs": 1,
+    "callbacks": [],
 
     "checkpoint_state": "epoch", # "no_checkpoint" or "epoch"
     "checkpoint_dir": os.path.join(os.getcwd(), "history", "checkpoints"),

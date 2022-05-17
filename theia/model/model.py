@@ -10,7 +10,7 @@ from wandb import wandb
 from datetime import datetime
 from uuid import uuid4
 
-# TODO: Add the ability to checkpoint the model.
+# TODO: Create prediction function that can be used to make predictions on new data.
 
 class Model():
     def __init__(self, id = None):
@@ -32,7 +32,7 @@ class Model():
         # Set checkpoint.
         if self.config["checkpoint_state"] != "no_checkpoint":
             self.checkpoint = tf.train.Checkpoint(model=self.model, optimizer=self.config["optimizer"])
-            self.checkpoint_manager = tf.train.CheckpointManager(self.checkpoint, self.config["checkpoint_dir"] + os.sep + self.id, max_to_keep=5)
+            self.checkpoint_manager = tf.train.CheckpointManager(self.checkpoint, self.config["checkpoint_dir"] + os.sep + self.config["name"] + os.sep + self.id, max_to_keep=5)
         
         # Warning if model checkpoint is enabled and wandb is enabled, the model should be given an id, so that if it run the checkpoint will be resumed from the same run-id on wandb.
         if self.config["checkpoint_state"] != "no_checkpoint" and self.config["use_wandb"] and id is None:
@@ -122,7 +122,7 @@ class Model():
             print("\033[33mNot using Wandb, every logs will be printed to the console.\033[0m")
 
         # Use the alive progress bar to show the progress of the training.
-        with alive_bar(num_batches * self.config["epochs"], ctrl_c=False, manual=False, dual_line=True, spinner="pulse") as bar:
+        with alive_bar(num_batches * self.config["epochs"], ctrl_c=False, manual=False, dual_line=True, spinner="dots_waves") as bar:
 
             # This is the training loop.
             for epoch in range(self.config["epochs"]):
@@ -257,7 +257,7 @@ class Model():
         """
 
         # Create the model directory.
-        model_path = os.path.join(dir_path, "saved_model", self.id)
+        model_path = os.path.join(dir_path, "saved_model", self.config["name"], self.id)
 
         # Create directory for the model.
         if not os.path.exists(model_path):
@@ -296,3 +296,24 @@ class Model():
 
         # Log to user that the checkpoint callback was added using yellow color.
         print("\033[33mCheckpoint callback added. The model will be saved every epoch in {}.\033[0m".format(self.config["checkpoint_dir"]))
+    
+    def predict(self, images, batch_size=None, verbose=False):
+        """
+        This method is used to predict the labels for the given images.
+        """
+        # If batch_size is None, use the default batch size.
+        if batch_size is None:
+            batch_size = self.config["batch_size"]
+
+        # Create the dataset.
+        dataset = tf.data.Dataset.from_tensor_slices(images)
+        dataset = dataset.batch(batch_size)
+
+        # Iterate over the dataset.
+        predictions = []
+        for batch, (images) in enumerate(dataset):
+            # Compute the predictions.
+            predictions.append(self.model(images, training=False))
+
+        # Return the predictions.
+        return np.concatenate(predictions, axis=0)
