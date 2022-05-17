@@ -39,9 +39,6 @@ class Model():
         if self.config["checkpoint_state"] != "no_checkpoint" and self.config["use_wandb"] and id is None:
             print("\033[93mWARNING: Checkpoint is enabled but no id was given. This will cause the model to be saved on wandb with the same run-id as the checkpoint.\033[0m")
 
-        # Check wandb.
-        self.check_wandb_and_initilize()
-
         self.history = tf.keras.callbacks.History()
         self.callbacks.append(self.history)
 
@@ -58,14 +55,20 @@ class Model():
             # Initialize the wandb object and set the project name. (Check if checkpoint_state is set to no_checkpoint and if not set the name into the id of the model.)
             if self.config["checkpoint_state"] != "no_checkpoint":
                 self.wandb = wandb.init(project=self.config["name"], id=self.id, resume="allow")
-                # Add wandb callback to the callbacks list.
-                self.callbacks.append(wandb.keras.WandbCallback())
+
                 print("\033[92mWandb initialized with project name: {} and id: {} USING checkpoint.\033[0m".format(self.config["name"], self.id))
             else:
                 self.wandb = wandb.init(project=self.config["name"])
-                # Add wandb callback to the callbacks list.
-                self.callbacks.append(wandb.keras.WandbCallback())
+
                 print("\033[92mWandb initialized with project name: {} and id: {} WITHOUT checkpoint.\033[0m".format(self.config["name"], self.id))
+
+    def wandb_log(self, logs):
+        """
+        Log the given logs to wandb.
+        """
+        # Log the given logs to wandb.
+        if self.config["use_wandb"]:
+            wandb.log(logs)
 
     def compile_metrics(self):
         """
@@ -85,6 +88,9 @@ class Model():
 
         # Check if use wandb or not
         use_wandb = self.config["use_wandb"]
+
+        # Check if wandb is enabled and initialize the wandb object.
+        self.check_wandb_and_initilize()
         
         # Load all the callbacks.
         for callback in self.config["callbacks"]:
@@ -134,12 +140,12 @@ class Model():
                 bar.title = "Epoch {}/{}".format(epoch + 1, self.config["epochs"])
 
                 # Iterate over the training data.
-                for batch, (images, labels) in enumerate(train_dataset):
+                for batch, (x, y) in enumerate(train_dataset):
                     
                     self.callbacks.on_batch_begin(batch, metrics_dict)
                     self.callbacks.on_train_batch_begin(batch, metrics_dict)
 
-                    loss, predictions = self.train_step(images, labels)
+                    loss, predictions = self.train_step(x, y)
                     
                     # Update the progress bar text.
                     bar.text = metrics_string
@@ -168,13 +174,13 @@ class Model():
                     val_metrics_string += "val_loss: {:.4f} val_{}: {:.4f} ".format(0, metric.name, metric.result())
                 
                 # Iterate over the validation data.
-                for batch, (images, labels) in enumerate(val_dataset):
+                for batch, (x, y) in enumerate(val_dataset):
                     
                     self.callbacks.on_batch_begin(batch, metrics_dict)
                     self.callbacks.on_test_batch_begin(batch, metrics_dict)
 
                     # Compute the loss and predictions.
-                    loss, predictions = self.val_train_step(images, labels)
+                    loss, predictions = self.val_train_step(x, y)
 
                     # Update the progress bar text.
                     bar.text = val_metrics_string
@@ -186,10 +192,6 @@ class Model():
                         val_metrics_string += "val_{}: {:.4f} ".format(metric.name, metric.result())
                         metrics_dict["val_{}".format(metric.name)] = metric.result()
 
-                    # Add images to the wandb.
-                    if use_wandb:
-                        metrics_dict["images"] = wandb.Image(images, caption="Label: {}, Prediction: {}".format(labels, predictions))
-
                     # Update the progress bar.
                     bar()
 
@@ -200,31 +202,30 @@ class Model():
                 if not use_wandb:
                     print("epoch {}: {} {}\n".format(epoch + 1, metrics_string, val_metrics_string))
 
-                # If log_on_epoch_end is True, log the metrics.
-                # if use_wandb and log_on_epoch_end:
-                #     wandb.log(metrics_dict)
-
                 # Save the model if the checkpoint_on_epoch_end is True.
                 if self.config["checkpoint_state"] == "epoch":
                     self.checkpoint_manager.save()
+                
+                # If wandb is used, log the metrics.
+                if use_wandb:
+                    self.wandb.log(metrics_dict)
 
                 self.callbacks.on_epoch_end(epoch, metrics_dict)
-        
         self.callbacks.on_train_end(metrics_dict)
-    
-    def train_step(self, images, labels):
+
+    def train_step(self, x, y):
         """
         This method is used to train the model in a single step.
         """
         # Open Gradient Tape.
         with tf.GradientTape() as tape:
             # Compute the loss.
-            predictions = self.model(images, training=True)
-            loss = self.config["loss"](labels, predictions)
+            predictions = self.model(x, training=True)
+            loss = self.config["loss"](y, predictions)
 
         # Iterate over the metrics and update them.
         for metric in self.config["metrics"]:
-            metric.update_state(labels, predictions)
+            metric.update_state(y, predictions)
         
         # Compute the gradients.
         gradients = tape.gradient(loss, self.model.trainable_weights)
@@ -234,17 +235,17 @@ class Model():
 
         return loss, predictions
     
-    def val_train_step(self, images, labels):
+    def val_train_step(self, x, y):
         """
         This method is used to validate the model in a single step.
         """
         # Compute the loss.
-        predictions = self.model(images, training=False)
-        loss = self.config["loss"](labels, predictions)
+        predictions = self.model(x, training=False)
+        loss = self.config["loss"](y, predictions)
 
         # Calculate the metrics.
         for metric in self.config["metrics"]:
-            metric.update_state(labels, predictions)
+            metric.update_state(y, predictions)
 
         return loss, predictions
 
@@ -294,23 +295,34 @@ class Model():
         # Log to user that the checkpoint callback was added using yellow color.
         print("\033[33mCheckpoint callback added. The model will be saved every epoch in {}.\033[0m".format(self.config["checkpoint_dir"]))
     
-    def predict(self, images, batch_size=None, verbose=False):
+    def predict(self, xs, batch_size=None, verbose=False):
         """
-        This method is used to predict the labels for the given images.
+        This method is used to predict the y for the given x.
         """
         # If batch_size is None, use the default batch size.
         if batch_size is None:
             batch_size = self.config["batch_size"]
 
-        # Create the dataset.
-        dataset = tf.data.Dataset.from_tensor_slices(images)
-        dataset = dataset.batch(batch_size)
-
         # Iterate over the dataset.
         predictions = []
-        for batch, (images) in enumerate(dataset):
+        for batch, (x, y) in enumerate(xs):
             # Compute the predictions.
-            predictions.append(self.model(images, training=False))
+            predictions.append(self.model(x, training=False))
 
         # Return the predictions.
         return np.concatenate(predictions, axis=0)
+    
+    def load(self, path = None):
+        """
+        Load the model from the given path.
+        """
+
+        # If path is None, use the default path.
+        if path is None:
+            path = os.path.join(self.config["save_dir"], self.config["name"], self.id)
+
+        # Load the model.
+        self.model.load_weights(path + os.sep + "model.h5")
+
+        # Log to user that the model was loaded using green color.
+        print("\033[92mModel loaded from {}\033[0m".format(path))
