@@ -1,5 +1,6 @@
 # Copyright (C) 2022 by Thomi Aditya.  All rights reserved.
 
+from importlib_metadata import entry_points
 from setuptools import setup, find_packages
 
 # Get the long description from the README file
@@ -27,6 +28,12 @@ setup(
     'License :: OSI Approved :: MIT License',
     'Programming Language :: Python :: 3',
   ],
+
+  entry_points={
+    'console_scripts': [
+      'theia-api = app:main'
+    ]
+  },
 
   keywords='sentiment analysis',
   packages=find_packages(exclude=['docs', 'tests']),
