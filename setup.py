@@ -28,7 +28,7 @@ setup(
   ],
 
   keywords='sentiment analysis',
-  packages=find_packages(),
+  packages=find_packages(exclude=['docs', 'tests']),
   install_requires=requirements,
   python_requires='>=3.7',
 )
