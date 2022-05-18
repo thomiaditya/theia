@@ -2,7 +2,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-from theia.model import config
+from .config import model_config, model_definition
 from alive_progress import alive_bar
 from wandb import wandb
 from datetime import datetime
@@ -15,8 +15,8 @@ class Model():
         """
         super(Model, self).__init__()
 
-        self.config = config.config
-        self.model = config.model_definition
+        self.config = model_config
+        self.model = model_definition
         self.callbacks = tf.keras.callbacks.CallbackList(None, add_history=True)
 
         # Set the model id.
@@ -36,9 +36,6 @@ class Model():
 
         # Check if wandb is enabled and initialize the wandb object.
         self._check_wandb_and_initilize()
-
-        self.history = tf.keras.callbacks.History()
-        self.callbacks.append(self.history)
 
         # Prompt user that model was created using green color.
         print("\033[32mModel created: " + self.config["name"] + "\033[0m")
@@ -86,7 +83,6 @@ class Model():
         """
         This method is called when the model is trained.
         """
-
         # Check if use wandb or not
         use_wandb = self.config["use_wandb"]
         wandb = self.wandb if use_wandb else None
@@ -104,15 +100,19 @@ class Model():
             if checkpoint_status != None:
                 print("\033[33mModel restored from checkpoint.\033[0m")
 
+        # This is the log for data collection.
+        log_data = {
+            "validation_data": val_dataset
+        }
+
+        # Add wandb to the log data.
+        if use_wandb:
+            log_data["wandb"] = wandb
+
         # Iterate over metrics to calculate the loss and accuracy.
         logs = {
             "loss": 0,
         }
-
-        log_data = {}
-        log_data["validation_data"] = val_dataset
-        if use_wandb:
-            log_data["wandb"] = wandb
 
         metrics_string = ""
         for metric in self.config["metrics"]:
@@ -132,6 +132,8 @@ class Model():
             print("\033[33mUsing Wandb, every logs will be redirected to wandb and will not be printed on the console.\033[0m")
         else:
             print("\033[33mNot using Wandb, every logs will be printed to the console.\033[0m")
+
+        # Update the log_data append with the logs and send it to ontrainbegin callback.
         log_data.update(logs)
         self.callbacks.on_train_begin(log_data)
 
@@ -140,6 +142,8 @@ class Model():
 
             # This is the training loop.
             for epoch in range(self.config["epochs"]):
+
+                # Update the log_data append with the logs and send it to onepochbegin callback.
                 log_data.update(logs)
                 self.callbacks.on_epoch_begin(epoch + 1, log_data)
 
@@ -207,7 +211,7 @@ class Model():
 
                 # Print the epoch and training metrics and validation metrics.
                 if not use_wandb:
-                    print("epoch {}: {} {}\n".format(epoch + 1, metrics_string, val_metrics_string))
+                    print("epoch {}: {} | {}\n".format(epoch + 1, metrics_string, val_metrics_string))
 
                 # Save the model if the checkpoint_on_epoch_end is True.
                 if self.config["checkpoint_state"] == "epoch":
@@ -219,6 +223,7 @@ class Model():
 
                 log_data.update(logs)
                 self.callbacks.on_epoch_end(epoch + 1, log_data)
+
         self.callbacks.on_train_end(log_data)
 
     def _train_step(self, x, y):
