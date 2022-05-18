@@ -18,6 +18,7 @@ setup(
   long_description_content_type='text/markdown',
   url='https://github.com/thomiaditya/theia',
   author='Thomi Aditya Alhakiim',
+  author_email='thomiaditya@gmail.com',
   license='MIT',
   classifiers=[
     'Development Status :: 3 - Alpha',
