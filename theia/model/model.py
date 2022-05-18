@@ -91,6 +91,7 @@ class Model():
 
         # Check if use wandb or not
         use_wandb = self.config["use_wandb"]
+        wandb = self.wandb if use_wandb else None
         
         # Load all the callbacks.
         for callback in self.config["callbacks"]:
@@ -106,19 +107,25 @@ class Model():
                 print("\033[33mModel restored from checkpoint.\033[0m")
 
         # Iterate over metrics to calculate the loss and accuracy.
-        metrics_dict = {"loss": 0}
+        logs = {
+            "loss": 0,
+        }
+
+        log_data = {}
+        log_data["validation_data"] = val_dataset
+        if use_wandb:
+            log_data["wandb"] = wandb
+
         metrics_string = ""
         for metric in self.config["metrics"]:
             metric.reset_states()
             metrics_string += "loss: {:.4f} {}: {:.4f} ".format(0, metric.name, metric.result())
-            metrics_dict[metric.name] = metric.result()
+            logs[metric.name] = metric.result()
 
         # Get the number of batches in the dataset.
         train_batches = len(train_dataset)
         val_batches = len(val_dataset)
         num_batches = train_batches + val_batches
-
-        self.callbacks.on_train_begin(metrics_dict)
 
         self._compile_metrics()
 
@@ -127,14 +134,16 @@ class Model():
             print("\033[33mUsing Wandb, every logs will be redirected to wandb and will not be printed on the console.\033[0m")
         else:
             print("\033[33mNot using Wandb, every logs will be printed to the console.\033[0m")
+        log_data.update(logs)
+        self.callbacks.on_train_begin(log_data)
 
         # Use the alive progress bar to show the progress of the training.
         with alive_bar(num_batches * self.config["epochs"], ctrl_c=False, manual=False, dual_line=True, spinner="pulse") as bar:
 
             # This is the training loop.
             for epoch in range(self.config["epochs"]):
-                
-                self.callbacks.on_epoch_begin(epoch, metrics_dict)
+                log_data.update(logs)
+                self.callbacks.on_epoch_begin(epoch + 1, log_data)
 
                 # Setting the bar for each epoch.
                 bar.title = "Epoch {}/{}".format(epoch + 1, self.config["epochs"])
@@ -142,8 +151,8 @@ class Model():
                 # Iterate over the training data.
                 for batch, (x, y) in enumerate(train_dataset):
                     
-                    self.callbacks.on_batch_begin(batch, metrics_dict)
-                    self.callbacks.on_train_batch_begin(batch, metrics_dict)
+                    self.callbacks.on_batch_begin(batch, logs)
+                    self.callbacks.on_train_batch_begin(batch, logs)
 
                     loss, predictions = self._train_step(x, y)
                     
@@ -152,20 +161,20 @@ class Model():
 
                     # Update metrics string with the new metrics.
                     metrics_string = "loss: {:.4f} ".format(loss.numpy())
-                    metrics_dict["loss"] = loss.numpy()
+                    logs["loss"] = loss.numpy()
                     for metric in self.config["metrics"]:
                         metrics_string += "{}: {:.4f} ".format(metric.name, metric.result())
-                        metrics_dict[metric.name] = metric.result()
+                        logs[metric.name] = metric.result()
 
                     # Update the progress bar loading.
                     bar()
 
                     # If wandb is used, log the metrics.
                     # if use_wandb and batch % log_wandb_on == 0 and not log_on_epoch_end:
-                    #     wandb.log(metrics_dict)
+                    #     wandb.log(logs)
 
-                    self.callbacks.on_train_batch_end(batch, metrics_dict)
-                    self.callbacks.on_batch_end(batch, metrics_dict)
+                    self.callbacks.on_train_batch_end(batch, logs)
+                    self.callbacks.on_batch_end(batch, logs)
                 
                 # Iterate over metrics to calculate the loss and accuracy.
                 val_metrics_string = ""
@@ -176,8 +185,8 @@ class Model():
                 # Iterate over the validation data.
                 for batch, (x, y) in enumerate(val_dataset):
                     
-                    self.callbacks.on_batch_begin(batch, metrics_dict)
-                    self.callbacks.on_test_batch_begin(batch, metrics_dict)
+                    self.callbacks.on_batch_begin(batch, logs)
+                    self.callbacks.on_test_batch_begin(batch, logs)
 
                     # Compute the loss and predictions.
                     loss, predictions = self._val_train_step(x, y)
@@ -187,16 +196,16 @@ class Model():
 
                     # Update the metrics string with the new metrics.
                     val_metrics_string  = "val_loss: {:.4f} ".format(loss.numpy())
-                    metrics_dict["val_loss"] = loss.numpy()
+                    logs["val_loss"] = loss.numpy()
                     for metric in self.config["metrics"]:
                         val_metrics_string += "val_{}: {:.4f} ".format(metric.name, metric.result())
-                        metrics_dict["val_{}".format(metric.name)] = metric.result()
+                        logs["val_{}".format(metric.name)] = metric.result()
 
                     # Update the progress bar.
                     bar()
 
-                    self.callbacks.on_test_batch_end(batch, metrics_dict)
-                    self.callbacks.on_batch_end(batch, metrics_dict)
+                    self.callbacks.on_test_batch_end(batch, logs)
+                    self.callbacks.on_batch_end(batch, logs)
 
                 # Print the epoch and training metrics and validation metrics.
                 if not use_wandb:
@@ -208,10 +217,11 @@ class Model():
                 
                 # If wandb is used, log the metrics.
                 if use_wandb:
-                    self.wandb.log(metrics_dict)
+                    self.wandb.log(logs)
 
-                self.callbacks.on_epoch_end(epoch, metrics_dict)
-        self.callbacks.on_train_end(metrics_dict)
+                log_data.update(logs)
+                self.callbacks.on_epoch_end(epoch + 1, log_data)
+        self.callbacks.on_train_end(log_data)
 
     def _train_step(self, x, y):
         """

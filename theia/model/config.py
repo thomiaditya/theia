@@ -9,14 +9,14 @@ config = {
     "id": "dense", # This is the id of the model. If use_wandb is True, this will be the name of the Run in wandb.
     "input_shape": [28, 28, 1], # This is the shape of the input data.
     "output_shape": 10, # Shape of the output data.
-    "use_wandb": False, # Set to True to use wandb
+    "use_wandb": True, # Set to True to use wandb
     "optimizer": keras.optimizers.Adam(learning_rate=0.001), # Optimizer to use.
     "loss": keras.losses.CategoricalCrossentropy(), # Loss function to use.
     "metrics": [ # Metrics to use. Use the keras.metrics.Metric class.
         keras.metrics.CategoricalAccuracy()
     ],
     "batch_size": 32, # Batch size to use for training.
-    "epochs": 3, # Number of epochs to train for.
+    "epochs": 2, # Number of epochs to train for.
     "callbacks": [ # Callbacks to use. Use the keras.callbacks.Callback class.
         CustomCallback()
     ],
