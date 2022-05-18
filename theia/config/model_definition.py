@@ -1,6 +1,6 @@
 from tensorflow import keras
 import os
-from .model_config import config
+from .model_config import model_config as config
 
 # Model definition goes here. Use the keras.layers.Layer class.
 model_definition = keras.Sequential([
