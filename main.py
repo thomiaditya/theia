@@ -2,7 +2,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-from theia.model import Model
+from theia import Model
 import tensorflow_datasets as tfds
 import wandb
 
