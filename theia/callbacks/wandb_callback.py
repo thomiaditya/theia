@@ -1,5 +1,6 @@
 # This file will contains the custom callback for the model.
 import os
+from matplotlib.pyplot import step
 import tensorflow as tf
 import numpy as np
 import wandb
@@ -21,6 +22,6 @@ class WandbCallback(tf.keras.callbacks.Callback):
       # Send the images to wandb
       logs["wandb"].log({
         "image_predictions": images_sent
-      })
+      }, step=epoch)
 
       print("Image predictions sent to wandb")

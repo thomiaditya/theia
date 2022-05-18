@@ -1,0 +1,5 @@
+make: Entering directory 'g:/all-project/theia'
+make: Leaving directory 'g:/all-project/theia'
+ 
+Makefile:2: *** missing separator.  Stop.
+
