@@ -1,6 +1,8 @@
 about-time==3.1.1
 absl-py==1.0.0
 alive-progress==2.4.1
+anyio==3.6.1
+asgiref==3.5.2
 astunparse==1.6.3
 cachetools==5.1.0
 certifi==2021.10.8
@@ -10,6 +12,7 @@ colorama==0.4.4
 cycler==0.11.0
 dill==0.3.4
 docker-pycreds==0.4.0
+fastapi==0.78.0
 flatbuffers==2.0
 fonttools==4.33.3
 gast==0.5.3
@@ -21,7 +24,9 @@ google-pasta==0.2.0
 googleapis-common-protos==1.56.1
 grapheme==0.6.0
 grpcio==1.46.1
+h11==0.13.0
 h5py==3.6.0
+httptools==0.4.0
 idna==3.3
 importlib-metadata==4.11.3
 keras==2.8.0
@@ -42,8 +47,10 @@ protobuf==3.20.1
 psutil==5.9.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
+pydantic==1.9.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
+python-dotenv==0.20.0
 python-utils==3.2.2
 PyYAML==6.0
 requests==2.27.1
@@ -54,6 +61,8 @@ setproctitle==1.2.3
 shortuuid==1.0.9
 six==1.16.0
 smmap==5.0.0
+sniffio==1.2.0
+starlette==0.19.1
 tensorboard==2.8.0
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.1
@@ -66,7 +75,10 @@ tf-estimator-nightly==2.8.0.dev2021122109
 tqdm==4.64.0
 typing_extensions==4.2.0
 urllib3==1.26.9
+uvicorn==0.17.6
 wandb==0.12.16
+watchgod==0.8.2
+websockets==10.3
 Werkzeug==2.1.2
 wrapt==1.14.1
 zipp==3.8.0
