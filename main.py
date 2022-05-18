@@ -19,22 +19,22 @@ test_data = test_data.map(lambda image, label: (tf.cast(image, dtype="float32") 
 train_data = train_data.batch(32)
 test_data = test_data.batch(32)
 
-# model.train(train_data, test_data)
+model.train(train_data, test_data)
 
-model.load()
+# model.load()
 
-images = test_data.take(1)
+# images = test_data.take(1)
 
-# Iterate through the data and send to wandb for visualization
-images_sent = []
-for image, label in images:
-  for i, img in enumerate(image):
-    images_sent.append(wandb.Image(img.numpy(), caption="Label: {}, Prediction: {}".format(np.argmax(label[i]), np.argmax(model.predict(np.expand_dims(img.numpy(), axis=0))))))
+# # Iterate through the data and send to wandb for visualization
+# images_sent = []
+# for image, label in images:
+#   for i, img in enumerate(image):
+#     images_sent.append(wandb.Image(img.numpy(), caption="Label: {}, Prediction: {}".format(np.argmax(label[i]), np.argmax(model.predict(np.expand_dims(img.numpy(), axis=0))))))
 
-print(len(images_sent))
+# print(len(images_sent))
 
-model.wandb_log({
-  "image_predictions": images_sent
-})
+# model.wandb_log({
+#   "image_predictions": images_sent
+# })
 
 model.save()

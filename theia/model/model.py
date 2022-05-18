@@ -10,9 +10,6 @@ from wandb import wandb
 from datetime import datetime
 from uuid import uuid4
 
-# TODO: Create prediction function that can be used to make predictions on new data.
-# TODO: Id is a unique identifier for the model + the id from config.
-
 class Model():
     def __init__(self):
         """
@@ -40,7 +37,7 @@ class Model():
             print("\033[93mWARNING: Checkpoint is enabled but no id was given. This will cause the model to be saved on wandb with the same run-id as the checkpoint.\033[0m")
 
         # Check if wandb is enabled and initialize the wandb object.
-        self.check_wandb_and_initilize()
+        self._check_wandb_and_initilize()
 
         self.history = tf.keras.callbacks.History()
         self.callbacks.append(self.history)
@@ -48,7 +45,7 @@ class Model():
         # Prompt user that model was created using green color.
         print("\033[32mModel created: " + self.config["name"] + "\033[0m")
     
-    def check_wandb_and_initilize(self):
+    def _check_wandb_and_initilize(self):
         """
         Check if wandb is enabled and initialize the wandb object.
         """
@@ -76,7 +73,7 @@ class Model():
         wandb.log(logs)
         print("\033[92mLogged to wandb.\033[0m")
 
-    def compile_metrics(self):
+    def _compile_metrics(self):
         """
         Compile the model with the given metrics.
         """
@@ -123,7 +120,7 @@ class Model():
 
         self.callbacks.on_train_begin(metrics_dict)
 
-        self.compile_metrics()
+        self._compile_metrics()
 
         # Print if the model is using wandb or not (print using yellow color).
         if use_wandb:
@@ -148,7 +145,7 @@ class Model():
                     self.callbacks.on_batch_begin(batch, metrics_dict)
                     self.callbacks.on_train_batch_begin(batch, metrics_dict)
 
-                    loss, predictions = self.train_step(x, y)
+                    loss, predictions = self._train_step(x, y)
                     
                     # Update the progress bar text.
                     bar.text = metrics_string
@@ -183,7 +180,7 @@ class Model():
                     self.callbacks.on_test_batch_begin(batch, metrics_dict)
 
                     # Compute the loss and predictions.
-                    loss, predictions = self.val_train_step(x, y)
+                    loss, predictions = self._val_train_step(x, y)
 
                     # Update the progress bar text.
                     bar.text = val_metrics_string
@@ -216,7 +213,7 @@ class Model():
                 self.callbacks.on_epoch_end(epoch, metrics_dict)
         self.callbacks.on_train_end(metrics_dict)
 
-    def train_step(self, x, y):
+    def _train_step(self, x, y):
         """
         This method is used to train the model in a single step.
         """
@@ -238,7 +235,7 @@ class Model():
 
         return loss, predictions
     
-    def val_train_step(self, x, y):
+    def _val_train_step(self, x, y):
         """
         This method is used to validate the model in a single step.
         """
@@ -270,7 +267,7 @@ class Model():
         # Log to user that the model was saved using green color.
         print("\033[92mModel saved to {}\033[0m".format(model_path))
 
-    def add_checkpoint_callback(self):
+    def _add_checkpoint_callback(self):
         """
         Create a checkpoint callback to save the model every epoch.
         """
@@ -325,3 +322,4 @@ class Model():
 
         # Log to user that the model was loaded using green color.
         print("\033[92mModel loaded from {}\033[0m".format(path))
+    
