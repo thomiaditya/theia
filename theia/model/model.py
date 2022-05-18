@@ -1,7 +1,5 @@
 # This module contains the model class and its methods for training.
-from audioop import add
 import os
-from turtle import title
 import tensorflow as tf
 import numpy as np
 from theia.model import config
