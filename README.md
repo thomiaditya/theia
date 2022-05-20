@@ -56,6 +56,9 @@ After that you can run the application using below command
 
 ```bash
 theia-cli # Still under development
+
+# You can see the available arguments with the help command
+theia-cli --help
 ```
 
 Above command will run the application in the current directory.
