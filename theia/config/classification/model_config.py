@@ -1,7 +1,7 @@
 # This file will contains the configuration dictionary for the model.
 from tensorflow import keras
 import os
-from ..callbacks import WandbCallback
+from ...callbacks import WandbCallback
 
 # This is the configuration dictionary for the model.
 model_config = {

@@ -2,19 +2,19 @@
 import os
 import tensorflow as tf
 import numpy as np
-from .config import model_config, model_definition, dataset
+from ..config.classification import model_config, model_definition, load_datasets
 from alive_progress import alive_bar
 from wandb import wandb
 from datetime import datetime
 from uuid import uuid4
 
 
-class Model():
+class ClassificationModel():
     def __init__(self):
         """
         Initialize the model class.
         """
-        super(Model, self).__init__()
+        super().__init__()
 
         self.config = model_config
         self.model = model_definition
@@ -94,7 +94,7 @@ class Model():
 
         # Load the train and validation datasets if they are not given.
         if train_dataset is None or val_dataset is None:
-            train_dataset, val_dataset, info = dataset.load_datasets()
+            train_dataset, val_dataset, info = load_datasets()
 
         # Check if use wandb or not
         use_wandb = self.config["use_wandb"]

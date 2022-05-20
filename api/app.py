@@ -9,10 +9,7 @@ parser.add_argument(
 
 
 def training():
-    from theia import Model
-
-    model = Model()
-    model.train()
+    pass
 
 
 def main():
