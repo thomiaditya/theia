@@ -4,7 +4,8 @@ import argparse
 
 # Parse the command line arguments.
 parser = argparse.ArgumentParser()
-parser.add_argument("train", help="Train the model.")
+parser.add_argument(
+    "train", help="Train the already configured model. (You can configure the model in theia/config)")
 
 
 def training():
