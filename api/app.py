@@ -1,13 +1,27 @@
 # This is the entry point for the command line script.
+import sys
+import argparse
 
-from pyexpat import model
-from theia import Model
+# Parse the command line arguments.
+parser = argparse.ArgumentParser()
+parser.add_argument("train", help="Train the model.")
+
+
+def training():
+    from theia import Model
+
+    model = Model()
+    model.train()
 
 
 def main():
-    print("Hello World!")
-    model = Model()
-    model.train()
+    # Execute the parser.
+    args = parser.parse_args()
+
+    # Execute the command.
+    if args.train:
+        training()
+        sys.exit(0)
 
 
 # Dont bother below script.
