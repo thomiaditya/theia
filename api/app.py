@@ -1,8 +1,14 @@
 # This is the entry point for the command line script.
 
-# The main function.
+from pyexpat import model
+from theia import Model
+
+
 def main():
     print("Hello World!")
+    model = Model()
+    model.train()
+
 
 # Dont bother below script.
 if __name__ == "__main__":
