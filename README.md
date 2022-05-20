@@ -1,6 +1,9 @@
 # Theia
 
-Theia is a sentiment analysis tool that uses voice and face recognition to analyze a person's feelings. It can be used to help businesses understand customer sentiment, or to analyze how employees are feeling. Theia can be used to monitor customer sentiment in real-time, or to analyze historical data to understand customer sentiment over time. It can also be used to understand how employees are feeling, and to identify potential issues early.
+Theia is a recommender system for therapists that considers both the therapist's and the client's preferences to make recommendations.
+The therapist's preferences are considered when making suggestions for clients. The therapist can set different weights for different criteria, such as the type of therapy, the client's needs, and the therapist's expertise.
+The client's preferences are considered when making suggestions for therapists. The client can set different weights for different criteria, such as the type of therapy, the therapist's approach, and the therapist's location.
+Theia takes into account both the therapist's and the client's preferences to make the best possible recommendations.
 
 <!--
 Theia is easy to use - simply install the software and point your camera at a person's face. Theia will analyze the person's facial expressions and voice to generate a sentiment score. The score will range from -1 (very negative) to 1 (very positive), with 0 being neutral. Theia can also generate a report that includes a breakdown of the person's sentiment by different emotions.
@@ -17,27 +20,45 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
-```
-Give examples
-```
+- [Python](https://www.python.org/downloads/), version 3.6 or later
+- [Python Virtual Environment](https://virtualenv.pypa.io/en/stable/), version 16.0 or later
 
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
+Clone the repository using below command
 
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+```bash
+git clone https://github.com/thomiaditya/theia.git
+cd theia
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+#### Windows
+
+```powershell
+# Activate the virtual environment
+python -m venv venv
+.\venv\Scripts\activate
+pip install .
+```
+
+#### Linux
+
+```bash
+# Activate the virtual environment
+python3 -m venv venv
+source venv/bin/activate
+pip3 install .
+```
+
+After that you can run the application using below command
+
+```bash
+theia-cli # Still under development
+```
+
+Above command will run the application in the current directory.
 
 ## Running the tests
 
@@ -48,7 +69,9 @@ Explain how to run the automated tests for this system
 Explain what these tests test and why
 
 ```
+
 Give an example
+
 ```
 
 ### And coding style tests
@@ -56,7 +79,9 @@ Give an example
 Explain what these tests test and why
 
 ```
+
 Give an example
+
 ```
 
 ## Deployment
@@ -65,9 +90,9 @@ Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-- Tensorflow, for model training and deployment
-- Wandb, for hyperparameter tuning and experiment tracking
-- Python Virtual Environment, to manage project dependencies
+- [Tensorflow](https://www.tensorflow.org/), for model training and deployment also [Keras](https://keras.io/)
+- [Wandb](https://wandb.ai), for hyperparameter tuning and experiment tracking
+- [Python Virtual Environment](https://docs.python.org/3/tutorial/venv.html), to manage project dependencies
 
 ## Contributing
 
@@ -92,3 +117,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 - Hat tip to anyone whose code was used
 - Inspiration
 - etc
+
+```
+
+```
