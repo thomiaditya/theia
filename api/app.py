@@ -9,7 +9,11 @@ parser.add_argument(
 
 
 def training():
-    pass
+    from theia import RetrievalModel
+
+    model = RetrievalModel()
+    model.fit()
+    model.evaluate()
 
 
 def main():
