@@ -2,6 +2,8 @@
 import sys
 import argparse
 
+sys.dont_write_bytecode = True
+
 # Parse the command line arguments.
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -12,12 +14,11 @@ def training():
     from theia import RetrievalModel
 
     model = RetrievalModel()
-    model.fit()
-    model.evaluate()
+    # model.fit()
 
-    # user = "42"
-    # print("Recommendations for user {}: {}".format(
-    #     user, model.predict(user)[0, :3]))
+    user = "42"
+    print("Recommendations for user {}: {}".format(
+        user, model.predict(user)[0, :3]))
 
 
 def main():

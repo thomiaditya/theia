@@ -238,15 +238,15 @@ class RetrievalModel(tf.keras.Model):
         # Print the metrics.
         print("evaluation: {}".format(self.metrics_to_string(metrics)))
 
-    def predict(self, index):
+    def recommend(self, index):
         """
         Predict the model.
         """
         index = tfrs.layers.factorized_top_k.BruteForce(self.query_tower)
 
-        index.index_from_dataset(ds.get_candidates().batch(100).map(
-            lambda title: (title, self.candidate_tower(title))))
+        index.index(ds.get_candidates().batch(100).map(
+            self.candidate_tower), ds.get_candidates())
 
-        _, titles = index(np.array([index]))
+        _, titles = index(np.array(["42"]))
 
         return titles
