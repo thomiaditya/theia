@@ -4,7 +4,7 @@ import tensorflow_datasets as tfds
 import numpy as np
 import tensorflow as tf
 from .hyperparameters import hyperparameters as hp
-from typing import Dict, Text
+from typing import Dict, Text, Tuple
 
 # Ratings data.
 ratings = tfds.load("movielens/100k-ratings", split="train")
@@ -27,7 +27,7 @@ train = shuffled.take(80_000).shuffle(100_000).batch(hp["train_batch_size"])
 test = shuffled.skip(80_000).take(20_000).batch(hp["test_batch_size"])
 
 
-def get_candidates():
+def get_candidates() -> tf.Tensor:
     """
     Get the candidates from the dataset. You will be implement to get the candidates from the dataset in this function.
     """
@@ -35,18 +35,28 @@ def get_candidates():
     return movies
 
 
-def get_unique_vocabs():
+def get_train_dataset() -> tf.data.Dataset:
+    """
+    Get the train dataset. You will be implement to get the train dataset in this function.
+    """
+
+    return train.cache()
+
+
+def get_test_dataset() -> tf.data.Dataset:
+    """
+    Get the test dataset. You will be implement to get the test dataset in this function.
+    """
+
+    return test.cache()
+
+
+def get_unique_vocabs() -> Tuple[tf.Tensor, tf.Tensor]:
     """
     Get the unique vocabs from the dataset. You will be implement to get the unique vocabs from the dataset in this function.
     """
 
-    movie_titles = movies.batch(1_000)
-    user_ids = ratings.batch(1_000_000).map(lambda x: x["user_id"])
-
-    unique_movie_titles = np.unique(np.concatenate(list(movie_titles)))
-    unique_user_ids = np.unique(np.concatenate(list(user_ids)))
-
-    return unique_movie_titles, unique_user_ids
+    return ratings.map(lambda x: x["user_id"]), movies
 
 
 def compute_loss(model, features: Dict[Text, tf.Tensor], training) -> tf.Tensor:

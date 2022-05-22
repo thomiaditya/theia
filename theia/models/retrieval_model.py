@@ -70,12 +70,12 @@ class RetrievalModel(tf.keras.Model):
         """
         return ds.compute_loss(self, features, training)
 
-    def metrics_to_string(self):
+    def metrics_to_string(self, metrics):
         """
         Convert the metrics to a string.
         """
         metrics_str = ""
-        for key, value in self._metrics.items():
+        for key, value in metrics.items():
             if type(value) == np.ndarray:
                 value = ", ".join(["{:.3f}".format(v)
                                   for v in value])
@@ -102,8 +102,11 @@ class RetrievalModel(tf.keras.Model):
         # Prompt the user that the model is training using yellow color.
         print("\033[33mTraining the Retrieval Model...\033[0m")
 
+        # Compile the model.
+        self.compile(optimizer=self.hyperparameters["optimizer"])
+
         # Cache the dataset.
-        cached_train = ds.train.cache()
+        cached_train = ds.get_train_dataset()
 
         # Get the number of batches.
         num_batches = len(cached_train)
@@ -121,11 +124,11 @@ class RetrievalModel(tf.keras.Model):
                 for step, features in enumerate(cached_train):
 
                     # Get the metrics from the training step.
-                    self.train_step(features)
+                    metrics = self.train_step(features)
 
                     # Update the bar.
                     if step % self.hyperparameters["log_every"] == 0 or step == 0:
-                        metrics_str = self.metrics_to_string()
+                        metrics_str = self.metrics_to_string(metrics)
 
                     # Text for the bar.
                     bar.text = metrics_str
@@ -136,9 +139,9 @@ class RetrievalModel(tf.keras.Model):
                 # Print the final metrics if not using Wandb.
                 if not self.hyperparameters["use_wandb"]:
                     print("epoch {}: {}".format(
-                        epoch + 1, self.metrics_to_string()))
+                        epoch + 1, self.metrics_to_string(metrics)))
                 else:
-                    wandb.log({"epoch": epoch + 1, **self._metrics})
+                    wandb.log({"epoch": epoch + 1, **metrics})
 
     def train_step(self, features):
         """
@@ -155,24 +158,24 @@ class RetrievalModel(tf.keras.Model):
             total_loss = loss + regularization_loss
 
         # Compute the gradients.
-        gradients = tape.gradient(total_loss, self.trainable_weights)
+        gradients = tape.gradient(total_loss, self.trainable_variables)
 
         # Update the weights.
-        self.hyperparameters["optimizer"].apply_gradients(
-            zip(gradients, self.trainable_weights))
+        self.optimizer.apply_gradients(
+            zip(gradients, self.trainable_variables))
 
         # Update the metrics.
-        self._metrics = {}
+        metrics = {}
         if self.hyperparameters["metrics_calculation"]:
-            self._metrics = {"factorized_top_k": np.array([v.numpy()
-                                                           for v in self.factorized_top_k.result()])}
+            metrics = {"factorized_top_k": np.array([v.numpy()
+                                                     for v in self.factorized_top_k.result()])}
 
         # Add loss to the metrics.
-        self._metrics["loss"] = loss
-        self._metrics["total_loss"] = total_loss
+        metrics["loss"] = loss
+        metrics["total_loss"] = total_loss
 
         # Log the metrics.
-        return True
+        return metrics
 
     def eval_step(self, features):
         """
@@ -187,16 +190,15 @@ class RetrievalModel(tf.keras.Model):
         total_loss = loss + regularization_loss
 
         # Update the metrics.
-        self._metrics = {}
-        self._metrics = {"factorized_top_k": np.array([v.numpy()
-                                                       for v in self.factorized_top_k.result()])}
+        metrics = {"factorized_top_k": np.array([v.numpy()
+                                                 for v in self.factorized_top_k.result()])}
 
         # Add loss to the metrics.
-        self._metrics["loss"] = loss
-        self._metrics["total_loss"] = total_loss
+        metrics["loss"] = loss
+        metrics["total_loss"] = total_loss
 
         # Log the metrics.
-        return True
+        return metrics
 
     def evaluate(self):
         """
@@ -207,7 +209,7 @@ class RetrievalModel(tf.keras.Model):
         print("\033[33mEvaluation starting...\033[0m")
 
         # Cache the dataset.
-        cached_eval = ds.test.cache()
+        cached_eval = ds.get_test_dataset()
 
         # Get the number of batches.
         num_batches = len(cached_eval)
@@ -221,11 +223,11 @@ class RetrievalModel(tf.keras.Model):
             for step, features in enumerate(cached_eval):
 
                 # Get the metrics from the training step.
-                self.eval_step(features)
+                metrics = self.eval_step(features)
 
                 # Update the bar.
                 if step % self.hyperparameters["log_every"] == 0 or step == 0:
-                    metrics_str = self.metrics_to_string()
+                    metrics_str = self.metrics_to_string(metrics)
 
                 # Text for the bar.
                 bar.text = metrics_str
@@ -234,7 +236,7 @@ class RetrievalModel(tf.keras.Model):
                 bar()
 
         # Print the metrics.
-        print("evaluation: {}".format(self.metrics_to_string()))
+        print("evaluation: {}".format(self.metrics_to_string(metrics)))
 
     def predict(self, index):
         """
