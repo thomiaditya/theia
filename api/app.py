@@ -15,6 +15,10 @@ def training():
     model.fit()
     model.evaluate()
 
+    # user = "42"
+    # print("Recommendations for user {}: {}".format(
+    #     user, model.predict(user)[0, :3]))
+
 
 def main():
     # Execute the parser.

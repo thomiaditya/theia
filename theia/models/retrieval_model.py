@@ -77,12 +77,12 @@ class RetrievalModel(tf.keras.Model):
         metrics_str = ""
         for key, value in self._metrics.items():
             if type(value) == np.ndarray:
-                value = ", ".join(["{:.5f}".format(v)
+                value = ", ".join(["{:.3f}".format(v)
                                   for v in value])
-                metrics_str += "{}: {} ".format(key, value)
+                metrics_str += "{}: {} | ".format(key, value)
                 continue
 
-            metrics_str += "{}: {:.5f} ".format(key, value)
+            metrics_str += "{}: {:.3f} | ".format(key, value)
         return metrics_str
 
     def instantiate_wandb(self):
@@ -135,7 +135,8 @@ class RetrievalModel(tf.keras.Model):
 
                 # Print the final metrics if not using Wandb.
                 if not self.hyperparameters["use_wandb"]:
-                    print("epoch {}: {}".format(epoch + 1, metrics_str))
+                    print("epoch {}: {}".format(
+                        epoch + 1, self.metrics_to_string()))
                 else:
                     wandb.log({"epoch": epoch + 1, **self._metrics})
 
@@ -234,3 +235,16 @@ class RetrievalModel(tf.keras.Model):
 
         # Print the metrics.
         print("evaluation: {}".format(self.metrics_to_string()))
+
+    def predict(self, index):
+        """
+        Predict the model.
+        """
+        index = tfrs.layers.factorized_top_k.BruteForce(self.query_tower)
+
+        index.index_from_dataset(ds.get_candidates().batch(100).map(
+            lambda title: (title, self.candidate_tower(title))))
+
+        _, titles = index(np.array([index]))
+
+        return titles
