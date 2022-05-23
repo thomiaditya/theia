@@ -1,9 +1,7 @@
 # This is the entry point for the command line script.
+import os
 import sys
 import argparse
-import tensorflow as tf
-import tensorflow_recommenders as tfrs
-import os
 
 
 # Parse the command line arguments.
