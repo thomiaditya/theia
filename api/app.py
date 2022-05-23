@@ -1,8 +1,10 @@
 # This is the entry point for the command line script.
 import sys
 import argparse
+import tensorflow as tf
+import tensorflow_recommenders as tfrs
+import os
 
-sys.dont_write_bytecode = True
 
 # Parse the command line arguments.
 parser = argparse.ArgumentParser()
@@ -11,14 +13,7 @@ parser.add_argument(
 
 
 def training():
-    from theia import RetrievalModel
-
-    model = RetrievalModel()
-    model.fit()
-    model.save()
-
-    # model.load()
-    # model.recommend("42")
+    pass
 
 
 def main():

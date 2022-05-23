@@ -1,2 +1,2 @@
-from .models.retrieval_model import RetrievalModel
+from .models import retrieval_model
 from .models.classification_model import ClassificationModel

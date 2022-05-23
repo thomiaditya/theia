@@ -20,7 +20,7 @@ hyperparameters = {
 
     # Optimizer for training.
     'optimizer': tf.keras.optimizers.Adagrad(learning_rate=0.5),
-    'metrics_calculation': False,  # Calculate the metrics.
+    'metrics_calculation': True,  # Calculate the metrics.
 
     "checkpoint_state": "no_checkpoint",
     # Directory to checkpoint the model to if checkpoint_state is "epoch".
