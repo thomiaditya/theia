@@ -5,32 +5,15 @@ import os
 import tensorflow as tf
 import tensorflow_recommenders as tfrs
 import numpy as np
-import tensorflow_datasets as tfds
+from . import dataset as ds, params
 
-# Ratings data.
-ratings = tfds.load("movielens/100k-ratings", split="train")
-# Features of all the available movies.
-movies = tfds.load("movielens/100k-movies", split="train")
+# Get unique query and candidate.
+unique_user_ids, unique_movie_titles = ds.get_unique_query_candidate()
 
-ratings = ratings.map(lambda x: {
-    "movie_title": x["movie_title"],
-    "user_id": x["user_id"],
-})
-movies = movies.map(lambda x: x["movie_title"])
+# Get candidate from dataset.
+candidate = ds.get_candidate()
 
-tf.random.set_seed(42)
-shuffled = ratings.shuffle(100_000, seed=42, reshuffle_each_iteration=False)
-
-train = shuffled.take(80_000)
-test = shuffled.skip(80_000).take(20_000)
-
-movie_titles = movies.batch(1_000)
-user_ids = ratings.batch(1_000_000).map(lambda x: x["user_id"])
-
-unique_movie_titles = np.unique(np.concatenate(list(movie_titles)))
-unique_user_ids = np.unique(np.concatenate(list(user_ids)))
-
-embedding_dimension = 32
+embedding_dimension = params.embedding_dimension
 
 user_model = tf.keras.Sequential([
     tf.keras.layers.StringLookup(
@@ -47,7 +30,7 @@ movie_model = tf.keras.Sequential([
 ])
 
 metrics = tfrs.metrics.FactorizedTopK(
-    candidates=movies.batch(128).map(movie_model)
+    candidates=candidate.batch(128).map(movie_model)
 )
 
 task = tfrs.tasks.Retrieval(
@@ -56,7 +39,7 @@ task = tfrs.tasks.Retrieval(
 
 
 class RetrievalDefinition(tfrs.Model):
-    def __init__(self, user_model, movie_model):
+    def __init__(self):
         super().__init__()
         self.movie_model: tf.keras.Model = movie_model
         self.user_model: tf.keras.Model = user_model
