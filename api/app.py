@@ -14,11 +14,11 @@ def training():
     from theia import RetrievalModel
 
     model = RetrievalModel()
-    # model.fit()
+    model.fit()
+    model.save()
 
-    user = "42"
-    print("Recommendations for user {}: {}".format(
-        user, model.predict(user)[0, :3]))
+    # model.load()
+    # model.recommend("42")
 
 
 def main():

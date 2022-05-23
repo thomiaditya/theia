@@ -15,7 +15,7 @@ def build_model(unique_queries, unique_candidates):
 
     query_vocabs = tf.keras.layers.StringLookup(
         mask_token=None, name='user_id_lookup')
-    query_vocabs.adapt(unique_queries)
+    query_vocabs.adapt(unique_queries, batch_size=10000)
     # Query tower is a model definition that will be used as a query for the retrieval model. For example, if we want to retrieve of the most related movie to the user, the user will be the query and the movie will be the item or we call the candidate.
     query_tower = tf.keras.Sequential([
         query_vocabs,
@@ -27,7 +27,7 @@ def build_model(unique_queries, unique_candidates):
 
     candidate_vocabs = tf.keras.layers.StringLookup(
         mask_token=None, name='movie_title_lookup')
-    candidate_vocabs.adapt(unique_candidates)
+    candidate_vocabs.adapt(unique_candidates, batch_size=10000)
     # Item tower is a model definition that will be used as a item for the retrieval model. For example, if we want to retrieve of the most related movie to the user, the user will be the query and the movie will be the item or we call the candidate.
     candidate_tower = tf.keras.Sequential([
         candidate_vocabs,

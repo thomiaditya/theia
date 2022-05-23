@@ -1,9 +1,12 @@
 # Hyperparameters for the recommender system (Theia) would be defined here.
 
 import tensorflow as tf
+import os
 
 # Define the hyperparameters.
 hyperparameters = {
+    'mode': 'training',
+
     # Name of the recommender system. This will be the name of the project in wandb.
     'name': 'retrieval',
     # Unique id for the recommender system. This will be the name of the folder in wandb.
@@ -19,6 +22,12 @@ hyperparameters = {
     'optimizer': tf.keras.optimizers.Adagrad(learning_rate=0.5),
     'metrics_calculation': False,  # Calculate the metrics.
 
+    "checkpoint_state": "no_checkpoint",
+    # Directory to checkpoint the model to if checkpoint_state is "epoch".
+    "checkpoint_dir": os.path.join(os.getcwd(), "history", "checkpoints"),
+    # Directory to save the model.
+    "save_dir": os.path.join(os.getcwd(), "history", "saved_models"),
     # Wandb hyperparameters.
+
     'use_wandb': False,  # Use wandb.
 }

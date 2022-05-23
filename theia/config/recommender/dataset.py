@@ -51,10 +51,18 @@ def get_test_dataset() -> tf.data.Dataset:
     return test.cache()
 
 
-def get_unique_vocabs() -> Tuple[tf.Tensor, tf.Tensor]:
+def get_unique_vocabs():
     """
     Get the unique vocabs from the dataset. You will be implement to get the unique vocabs from the dataset in this function.
     """
+
+    # movie_titles = movies.batch(1_000)
+    # user_ids = ratings.batch(1_000_000).map(lambda x: x["user_id"])
+
+    # unique_movie_titles = np.unique(np.concatenate(list(movie_titles)))
+    # unique_user_ids = np.unique(np.concatenate(list(user_ids)))
+
+    # return unique_movie_titles, unique_user_ids
 
     return ratings.map(lambda x: x["user_id"]), movies
 

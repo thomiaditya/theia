@@ -2,6 +2,7 @@
 
 import os
 import sys
+import tempfile
 import numpy as np
 from typing import Dict, List, Text
 import tensorflow as tf
@@ -22,10 +23,23 @@ class RetrievalModel(tf.keras.Model):
         Initialize the Retrieval Model.
         """
         super().__init__()
+
         self.hyperparameters = hp.hyperparameters
+
+        # Set the training flag.
+        self.is_training = self.hyperparameters["mode"] == "training"
+
+        # Save the id.
+        self.id = self.hyperparameters["id"]
+
+        if not self.is_training:
+            return
 
         # Get the unique vocabs from the dataset.
         self.unique_queries, self.unique_candidates = ds.get_unique_vocabs()
+
+        # Add checkpoint manager.
+        self.add_checkpoint_manager()
 
         # Build the model.
         self.query_tower, self.candidate_tower = definition.build_model(
@@ -51,6 +65,21 @@ class RetrievalModel(tf.keras.Model):
         except Exception as e:
             print(e)
             sys.exit(1)
+
+    def decorator(function):
+        """
+        Decorator for the Retrieval Model.
+        """
+
+        def wrapper(self, *args, **kwargs):
+
+            if not self.is_training:
+                print("\033[33mModel is not suppose to do training.\033[0m")
+                return
+
+            function(self, *args, **kwargs)
+
+        return wrapper
 
     def build_loss_function(self):
         """
@@ -94,6 +123,7 @@ class RetrievalModel(tf.keras.Model):
                        name=self.hyperparameters["id"],
                        config=self.hyperparameters)
 
+    @decorator
     def fit(self):
         """
         Fit the Retrieval Model.
@@ -107,6 +137,12 @@ class RetrievalModel(tf.keras.Model):
 
         # Cache the dataset.
         cached_train = ds.get_train_dataset()
+
+        # Load weights from checkpoint if exist.
+        if self.hyperparameters["checkpoint_state"] != "no_checkpoint":
+            checkpoint_status = self.checkpoint_manager.restore_or_initialize()
+            if checkpoint_status != None:
+                print("\033[33mModel restored from checkpoint.\033[0m")
 
         # Get the number of batches.
         num_batches = len(cached_train)
@@ -142,6 +178,10 @@ class RetrievalModel(tf.keras.Model):
                         epoch + 1, self.metrics_to_string(metrics)))
                 else:
                     wandb.log({"epoch": epoch + 1, **metrics})
+
+                # Checkpoint the model.
+                if self.hyperparameters["checkpoint_state"] == "epoch":
+                    self.checkpoint_manager.save()
 
     def train_step(self, features):
         """
@@ -200,6 +240,7 @@ class RetrievalModel(tf.keras.Model):
         # Log the metrics.
         return metrics
 
+    @decorator
     def evaluate(self):
         """
         Evaluate the model.
@@ -242,14 +283,75 @@ class RetrievalModel(tf.keras.Model):
         """
         Predict the model.
         """
-        index = tfrs.layers.factorized_top_k.BruteForce(self.query_tower)
+
+        _, titles = self.index(np.array([index]))
+
+        return titles
+
+    def create_indexer(self):
+        """
+        Get the indexer.
+        """
+        self.index = tfrs.layers.factorized_top_k.BruteForce(self.query_tower)
 
         # Get the candidates.
         candidates = ds.get_candidates()
 
-        index.index_from_dataset(
+        self.index.index_from_dataset(
             candidates.batch(100).map(lambda title: (title, self.candidate_tower(title))))
 
-        _, titles = index(np.array(["42"]))
+    def load(self, path=None):
+        """
+        Load the weights from saved model.
+        """
 
-        return titles
+        # If path is None, use the default path.
+        if path is None:
+            path = os.path.join(
+                self.hyperparameters["save_dir"], self.hyperparameters["name"], self.id)
+
+        # Load the model.
+        self.index = tf.saved_model.load(path)
+
+        print(self.index)
+
+        # Log to user that the model was loaded using green color.
+        print("\033[92mModel loaded from {}\033[0m".format(path))
+
+    def save(self):
+        """
+        Save the model.
+        """
+        # # Create the model directory.
+        # model_path = os.path.join(
+        #     self.hyperparameters["save_dir"], self.hyperparameters["name"], self.id)
+
+        # # Create directory for the model.
+        # if not os.path.exists(model_path):
+        #     os.makedirs(model_path)
+
+        # # Save the indexer.
+        # tf.saved_model.save(self.index, model_path)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "model")
+
+            # Get the indexer and save the indexer.
+            self.create_indexer()
+
+            # Save the index.
+            tf.saved_model.save(self.index, path)
+
+        # Log to user that the model was saved using green color.
+        # print("\033[92mModel saved to {}\033[0m".format(model_path))
+
+    def add_checkpoint_manager(self):
+        """
+        Add the checkpoint manager.
+        """
+        # Set checkpoint.
+        if self.hyperparameters["checkpoint_state"] != "no_checkpoint":
+            self.checkpoint = tf.train.Checkpoint(
+                model=self, optimizer=self.hyperparameters["optimizer"])
+            self.checkpoint_manager = tf.train.CheckpointManager(
+                self.checkpoint, self.hyperparameters["checkpoint_dir"] + os.sep + self.hyperparameters["name"] + os.sep + self.id, max_to_keep=3)
