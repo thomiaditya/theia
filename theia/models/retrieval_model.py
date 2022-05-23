@@ -244,8 +244,11 @@ class RetrievalModel(tf.keras.Model):
         """
         index = tfrs.layers.factorized_top_k.BruteForce(self.query_tower)
 
-        index.index(ds.get_candidates().batch(100).map(
-            self.candidate_tower), ds.get_candidates())
+        # Get the candidates.
+        candidates = ds.get_candidates()
+
+        index.index_from_dataset(
+            candidates.batch(100).map(lambda title: (title, self.candidate_tower(title))))
 
         _, titles = index(np.array(["42"]))
 

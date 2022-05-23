@@ -27,7 +27,7 @@ train = shuffled.take(80_000).shuffle(100_000).batch(hp["train_batch_size"])
 test = shuffled.skip(80_000).take(20_000).batch(hp["test_batch_size"])
 
 
-def get_candidates() -> tf.Tensor:
+def get_candidates():
     """
     Get the candidates from the dataset. You will be implement to get the candidates from the dataset in this function.
     """

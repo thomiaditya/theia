@@ -6,6 +6,13 @@ import tensorflow_recommenders as tfrs
 
 
 def build_model(unique_queries, unique_candidates):
+    """
+    Build the model for the Retrieval Recommender System.
+    """
+
+    # Prompt the user that the model is building with yellow text.
+    print("\033[93mBuilding the model...\033[0m")
+
     query_vocabs = tf.keras.layers.StringLookup(
         mask_token=None, name='user_id_lookup')
     query_vocabs.adapt(unique_queries)
@@ -29,5 +36,8 @@ def build_model(unique_queries, unique_candidates):
             output_dim=hp.hyperparameters["embedding_size"],
             name='movie_title_embedding'),
     ])
+
+    # Prompt the user that the model is built with green text.
+    print("\033[92mModel built.\033[0m")
 
     return query_tower, candidate_tower
