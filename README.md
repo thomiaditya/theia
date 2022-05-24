@@ -55,8 +55,6 @@ pip3 install .
 After that you can run the application using below command
 
 ```bash
-theia-recommender # Still under development
-
 # You can see the available arguments with the help command
 theia-recommender --help
 ```
