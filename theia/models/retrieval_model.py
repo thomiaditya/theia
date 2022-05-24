@@ -127,7 +127,6 @@ class RetrievalModel():
         """
         Convert metrics to string.
         """
-        metrics = metrics[next(iter(metrics))]
 
         _metrics_string = ""
         for key, value in metrics.items():
