@@ -6,12 +6,13 @@ import tensorflow as tf
 
 # Model settings
 name = "retrieval_model"  # Name of the model
-model_id = "test"  # Model id
+model_id = "546313-test"  # Model id
 checkpoint = True
 # Directory to checkpoint the model to if checkpoint_state is "epoch".
 checkpoint_dir = os.path.join(os.getcwd(), "history", "checkpoints")
 # Directory to save the model.
 save_dir = os.path.join(os.getcwd(), "history", "saved_models")
+use_wandb = False  # Whether to use wandb for logging.
 
 # Model params
 embedding_dimension = 32  # Spesify the embedding dimension of the models.

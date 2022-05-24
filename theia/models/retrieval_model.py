@@ -7,6 +7,7 @@ import numpy as np
 from ..config.recommender import retrieval_definition as rd, params, dataset as ds
 from ..utils import Logger
 from alive_progress import alive_bar
+import wandb
 
 
 class RetrievalModel():
@@ -21,6 +22,21 @@ class RetrievalModel():
         # Prompt the user that the model is created.
         self.logger.write(
             "Model {} is created successfully".format(self), level="INFO")
+
+    def _check_and_initialize_wandb(self):
+        """
+        Check and initialize the wandb.
+        """
+        # Check if the model use wandb.
+        if params.use_wandb:
+            # Initialize the wandb.
+            _wandb = wandb.init(project=params.name,
+                                id=params.model_id, resume="allow")
+
+            self.logger.write(
+                "Wandb is initialized.", level="WARNING")
+
+            return _wandb
 
     def _checkpoint_decorator(func):
         """
@@ -55,6 +71,9 @@ class RetrievalModel():
         """
         Training the dataset from dataset file using alive progress bar.
         """
+        # Check and initialize the wandb.
+        self.wandb = self._check_and_initialize_wandb()
+
         # Prompt the user that the training is starting.
         self.logger.write(
             "Training {} is starting...".format(self.model), level="WARNING")
@@ -90,8 +109,12 @@ class RetrievalModel():
                     # Update the progress bar.
                     bar()
 
-                # Print the result metrics and epoch.
-                print("epoch {}: {}".format(epoch + 1, metrics_string))
+                # Log to wandb.
+                if params.use_wandb:
+                    wandb.log(metrics)
+                else:
+                    # Print the result metrics and epoch.
+                    print("epoch {}: {}".format(epoch + 1, metrics_string))
 
                 # Save the checkpoint.
                 if params.checkpoint:
@@ -104,6 +127,8 @@ class RetrievalModel():
         """
         Convert metrics to string.
         """
+        metrics = metrics[next(iter(metrics))]
+
         _metrics_string = ""
         for key, value in metrics.items():
             _type = type(value)
@@ -139,11 +164,8 @@ class RetrievalModel():
             zip(gradients, self.model.trainable_variables))
 
         # Return the metrics.
-        metrics = {}
-
-        metrics["loss"] = loss
-        metrics["regularization_loss"] = regularization_loss
-        metrics["total_loss"] = total_loss
+        metrics = {
+            "loss": loss, "regularization_loss": regularization_loss, "total_loss": total_loss}
 
         if params.compute_metrics_on_train:
             metrics["factorized_top_k"] = np.array(
@@ -165,16 +187,16 @@ class RetrievalModel():
         total_loss = loss + regularization_loss
 
         # Return the metrics.
-        metrics = {}
+        metrics = {"val_loss": loss, "val_regularization_loss": regularization_loss,
+                   "val_total_loss": total_loss}
 
-        metrics["loss"] = loss
-        metrics["regularization_loss"] = regularization_loss
-        metrics["total_loss"] = total_loss
+        factorize_top_k = {metric.name: metric.result()
+                           for metric in self.model.metrics}
+        logs = {**metrics, **factorize_top_k}
 
-        metrics["factorized_top_k"] = np.array(
+        metrics["val_factorized_top_k"] = np.array(
             [metric.result() for metric in self.model.metrics])
-
-        return metrics
+        return metrics, logs
 
     def evaluate(self):
         """
@@ -188,7 +210,9 @@ class RetrievalModel():
         eval_data = ds.get_eval_data()
         eval_data = eval_data.batch(params.eval_batch_size)
 
-        with alive_bar(len(eval_data), ctrl_c=False, manual=False, dual_line=True, spinner="pulse", enrich_print=False) as bar:
+        num_batches = len(eval_data)
+
+        with alive_bar(num_batches, ctrl_c=False, manual=False, dual_line=True, spinner="pulse", enrich_print=False) as bar:
 
             # Set the title to evaluation.
             bar.title = "Evaluation"
@@ -197,7 +221,7 @@ class RetrievalModel():
             for batch, features in enumerate(eval_data):
 
                 # Compute the loss.
-                metrics = self.eval_step(features)
+                metrics, logs = self.eval_step(features)
 
                 # Metrics to string.
                 metrics_string = self.metrics_to_string(metrics)
@@ -207,6 +231,11 @@ class RetrievalModel():
 
                 # Update the progress bar.
                 bar()
+
+                # Log to wandb.
+                if params.use_wandb:
+                    if batch % (num_batches // 100) == 0:
+                        wandb.log(logs)
 
             # Print the result metrics.
             print("eval: {}".format(metrics_string))
@@ -223,6 +252,9 @@ class RetrievalModel():
         # Recommends candidate of all the candidates.
         self.indexer.index_from_dataset(tf.data.Dataset.zip(
             (candidates.batch(100), candidates.batch(100).map(self.model.candidate_model))))
+
+        # Call the indexer to build the index.
+        self.indexer(tf.constant(["1"]))
 
     def _indexer_decorator(func):
         """
