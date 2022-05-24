@@ -297,4 +297,20 @@ class RetrievalModel():
 
     @staticmethod
     def static_recommend(index, path=None):
-        pass
+        """
+        Recommend the candidates.
+        """
+        # Load the model.
+        # Check if path is None.
+        if path is None:
+            path = os.path.join(
+                params.save_dir, params.name, params.model_id)
+
+        # Load the indexer.
+        indexer = tf.saved_model.load(path)
+
+        # Recommend the candidates.
+        _, candidates = indexer(tf.constant([index]))
+
+        # Return the candidates.
+        return candidates

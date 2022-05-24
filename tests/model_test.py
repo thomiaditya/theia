@@ -1,6 +1,6 @@
 from theia import RetrievalModel
 
-model = RetrievalModel()
+# model = RetrievalModel()
 # model.train()
-print(model.recommend("42", "last_saved"))
+print(RetrievalModel.static_recommend("42"))
 # model.save()
