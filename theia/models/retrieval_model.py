@@ -2,6 +2,7 @@ import os
 import sys
 from typing import Dict
 import tensorflow as tf
+import tensorflow_recommenders as tfrs
 import numpy as np
 from ..config.recommender import retrieval_definition as rd, params, dataset as ds
 from ..utils import Logger
@@ -21,6 +22,35 @@ class RetrievalModel():
         self.logger.write(
             "Model {} is created successfully".format(self), level="INFO")
 
+    def _checkpoint_decorator(func):
+        """
+        Checkpoint decorator for the model.
+        """
+
+        def wrapper(self, *args, **kwargs):
+            if params.checkpoint:
+                checkpoint = tf.train.Checkpoint(
+                    model=self.model, optimizer=params.optimizer)
+
+                # Create checkpoint manager.
+                self.checkpoint_manager = tf.train.CheckpointManager(
+                    checkpoint, directory=os.path.join(
+                        params.checkpoint_dir, params.name, params.model_id),
+                    max_to_keep=3)
+
+                # Intialize the checkpoint or restore it.
+                status = self.checkpoint_manager.restore_or_initialize()
+                if status:
+                    self.logger.write(
+                        "Checkpoint {} is restored successfully".format(
+                            checkpoint),
+                        level="INFO")
+
+            func(self, *args, **kwargs)
+
+        return wrapper
+
+    @_checkpoint_decorator
     def train(self):
         """
         Training the dataset from dataset file using alive progress bar.
@@ -62,6 +92,10 @@ class RetrievalModel():
 
                 # Print the result metrics and epoch.
                 print("epoch {}: {}".format(epoch + 1, metrics_string))
+
+                # Save the checkpoint.
+                if params.checkpoint:
+                    self.checkpoint_manager.save()
 
         # Evaluate the model.
         self.evaluate()
@@ -177,11 +211,90 @@ class RetrievalModel():
             # Print the result metrics.
             print("eval: {}".format(metrics_string))
 
+    def create_indexer(self):
+        """
+        Create the indexer.
+        """
+        self.indexer = tfrs.layers.factorized_top_k.BruteForce(
+            self.model.query_model)
+
+        candidates = ds.get_candidate()
+
+        # Recommends candidate of all the candidates.
+        self.indexer.index_from_dataset(tf.data.Dataset.zip(
+            (candidates.batch(100), candidates.batch(100).map(self.model.candidate_model))))
+
+    def _indexer_decorator(func):
+        """
+        Decorator for the indexer.
+        """
+
+        def wrapper(self, index, load_model_dir=None, *args, **kwargs):
+            # Create brute force layer.
+            if load_model_dir == None:
+                # Create the indexer.
+                if not hasattr(self, "indexer"):
+                    self.create_indexer()
+
+                # Call the function.
+                return func(self, index, *args, **kwargs)
+
+            if load_model_dir == "last_saved":
+                # get last saved model dir.
+                self.indexer = self.load()
+
+                # Call the function.
+                return func(self, index, *args, **kwargs)
+
+        return wrapper
+
+    @_indexer_decorator
     def recommend(self, index):
-        pass
+        """
+        Recommend the candidates.
+        """
+        # Recommend the candidates.
+        _, candidates = self.indexer(tf.constant([index]))
 
-    def save(self):
-        pass
+        # Return the candidates.
+        return candidates
 
-    def load(self):
+    def save(self, path=None):
+        """
+        Save the model.
+        """
+        # Check the indexer.
+        if not hasattr(self, "indexer"):
+            self.create_indexer()
+
+        # If path is None, use the default path.
+        if path is None:
+            path = os.path.join(
+                params.save_dir, params.name, params.model_id)
+
+        # Save the indexer.
+        tf.saved_model.save(self.indexer, path)
+
+        # Log the save.
+        self.logger.write("Model saved to {}".format(path), level="INFO")
+
+    def load(self, path=None):
+        """
+        Load the model.
+        """
+        # Check if path is None.
+        if path is None:
+            path = os.path.join(
+                params.save_dir, params.name, params.model_id)
+
+        # Load the indexer.
+        indexer = tf.saved_model.load(path)
+
+        # Log the load.
+        self.logger.write("Model loaded from {}".format(path), level="INFO")
+
+        return indexer
+
+    @staticmethod
+    def static_recommend(index, path=None):
         pass

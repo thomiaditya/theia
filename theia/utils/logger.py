@@ -22,6 +22,8 @@ class Logger(object):
         elif level == "ERROR":
             print("\033[91m{}\033[0m".format(message), end="")
             self.log.write(message)
+        elif level == "QUITE":
+            self.log.write(message)
         else:
-            print(message, end="")
+            print(message)
             self.log.write(message)
