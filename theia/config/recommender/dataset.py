@@ -28,7 +28,7 @@ def get_train_data():
     return train
 
 
-def get_test_data():
+def get_eval_data():
     """
     Get test data.
     """

@@ -19,7 +19,7 @@ class RetrievalModel():
 
         # Prompt the user that the model is created.
         self.logger.write(
-            "Model is created successfully", level="INFO")
+            "Model {} is created successfully".format(self), level="INFO")
 
     def train(self):
         """
@@ -27,7 +27,7 @@ class RetrievalModel():
         """
         # Prompt the user that the training is starting.
         self.logger.write(
-            "Training is starting...", "WARNING")
+            "Training {} is starting...".format(self.model), level="WARNING")
 
         # Get the train data.
         train_data = ds.get_train_data()
@@ -63,9 +63,8 @@ class RetrievalModel():
                 # Print the result metrics and epoch.
                 print("epoch {}: {}".format(epoch + 1, metrics_string))
 
-        # Prompt the user that the training is finished.
-        self.logger.write(
-            "Training is finished.", "WARNING")
+        # Evaluate the model.
+        self.evaluate()
 
     def metrics_to_string(self, metrics) -> str:
         """
@@ -92,31 +91,93 @@ class RetrievalModel():
         with tf.GradientTape() as tape:
 
             # Loss computation.
-            loss = self.model.compute_loss(features)
+            loss = self.model.compute_loss(
+                features, training=not params.compute_metrics_on_train)
 
             # Handle regularization losses as well.
             regularization_loss = sum(self.model.losses)
 
             total_loss = loss + regularization_loss
 
+        # Update the weights.
         gradients = tape.gradient(total_loss, self.model.trainable_variables)
         params.optimizer.apply_gradients(
             zip(gradients, self.model.trainable_variables))
 
+        # Return the metrics.
         metrics = {}
 
         metrics["loss"] = loss
         metrics["regularization_loss"] = regularization_loss
         metrics["total_loss"] = total_loss
+
+        if params.compute_metrics_on_train:
+            metrics["factorized_top_k"] = np.array(
+                [metric.result() for metric in self.model.metrics])
+
+        return metrics
+
+    def eval_step(self, features):
+        """
+        Evaluation step for the model.
+        """
+        # Loss computation.
+        loss = self.model.compute_loss(
+            features, training=False)
+
+        # Handle regularization losses as well.
+        regularization_loss = sum(self.model.losses)
+
+        total_loss = loss + regularization_loss
+
+        # Return the metrics.
+        metrics = {}
+
+        metrics["loss"] = loss
+        metrics["regularization_loss"] = regularization_loss
+        metrics["total_loss"] = total_loss
+
         metrics["factorized_top_k"] = np.array(
             [metric.result() for metric in self.model.metrics])
 
         return metrics
 
-    def recommend(self, index):
-        pass
-
     def evaluate(self):
+        """
+        Evaluation the dataset from dataset file.
+        """
+        # Prompt the user that the evaluation is starting.
+        self.logger.write(
+            "Evaluation {} is starting...".format(self.model), level="WARNING")
+
+        # Get the eval data.
+        eval_data = ds.get_eval_data()
+        eval_data = eval_data.batch(params.eval_batch_size)
+
+        with alive_bar(len(eval_data), ctrl_c=False, manual=False, dual_line=True, spinner="pulse", enrich_print=False) as bar:
+
+            # Set the title to evaluation.
+            bar.title = "Evaluation"
+
+            # Iterate over the batches.
+            for batch, features in enumerate(eval_data):
+
+                # Compute the loss.
+                metrics = self.eval_step(features)
+
+                # Metrics to string.
+                metrics_string = self.metrics_to_string(metrics)
+
+                # Update the alive progress bar text.
+                bar.text = metrics_string
+
+                # Update the progress bar.
+                bar()
+
+            # Print the result metrics.
+            print("eval: {}".format(metrics_string))
+
+    def recommend(self, index):
         pass
 
     def save(self):

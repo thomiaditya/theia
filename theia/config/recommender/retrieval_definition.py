@@ -54,4 +54,4 @@ class RetrievalDefinition(tfrs.Model):
         positive_movie_embeddings = self.movie_model(features["movie_title"])
 
         # The task computes the loss and the metrics.
-        return self.task(user_embeddings, positive_movie_embeddings)
+        return self.task(user_embeddings, positive_movie_embeddings, compute_metrics=not training)
