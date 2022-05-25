@@ -16,6 +16,7 @@ use_wandb = False  # Whether to use wandb for logging.
 
 # Model params
 embedding_dimension = 32  # Spesify the embedding dimension of the models.
+use_timestamps = True  # Whether to use timestamp.
 
 # Training params
 compute_metrics_on_train = False  # If True, compute metrics on training set.

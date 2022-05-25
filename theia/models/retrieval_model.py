@@ -82,8 +82,12 @@ class RetrievalModel():
         train_data = ds.get_train_data()
         train_data = train_data.batch(params.train_batch_size)
 
+        # Get the validation data.
+        val_data = ds.get_eval_data()
+        val_data = val_data.batch(params.eval_batch_size)
+
         # Get the number of batches.
-        num_batches = len(train_data)
+        num_batches = len(train_data) + len(val_data)
 
         # Start alive progress bar.
         with alive_bar(num_batches * params.epochs, ctrl_c=False, manual=False, dual_line=True, spinner="pulse") as bar:
@@ -109,19 +113,30 @@ class RetrievalModel():
                     # Update the progress bar.
                     bar()
 
+                # Compute the metrics on the validation data.
+                for batch, features in enumerate(val_data):
+                    val_metrics, _ = self.eval_step(features, True)
+
+                    # Metrics to string.
+                    metrics_string = self.metrics_to_string(val_metrics)
+
+                    # Update the alive progress bar text.
+                    bar.text = metrics_string
+
+                    # Update the progress bar.
+                    bar()
+
                 # Log to wandb.
                 if params.use_wandb:
-                    wandb.log(metrics)
+                    wandb.log({**metrics, **val_metrics})
                 else:
                     # Print the result metrics and epoch.
-                    print("epoch {}: {}".format(epoch + 1, metrics_string))
+                    print("epoch {}: {}".format(
+                        epoch + 1, self.metrics_to_string({**metrics, **val_metrics})))
 
                 # Save the checkpoint.
                 if params.checkpoint:
                     self.checkpoint_manager.save()
-
-        # Evaluate the model.
-        self.evaluate()
 
     def metrics_to_string(self, metrics) -> str:
         """
@@ -172,7 +187,7 @@ class RetrievalModel():
 
         return metrics
 
-    def eval_step(self, features):
+    def eval_step(self, features, training=False):
         """
         Evaluation step for the model.
         """
@@ -193,11 +208,13 @@ class RetrievalModel():
                            for metric in self.model.metrics}
         logs = {**metrics, **factorize_top_k}
 
-        metrics["val_factorized_top_k"] = np.array(
-            [metric.result() for metric in self.model.metrics])
+        if not training or (training and params.compute_metrics_on_train):
+            metrics["val_factorized_top_k"] = np.array(
+                [metric.result() for metric in self.model.metrics])
+
         return metrics, logs
 
-    def evaluate(self):
+    def evaluate(self, eval_data):
         """
         Evaluation the dataset from dataset file.
         """
@@ -253,7 +270,7 @@ class RetrievalModel():
             (candidates.batch(100), candidates.batch(100).map(self.model.candidate_model))))
 
         # Call the indexer to build the index.
-        self.indexer(tf.constant(["1"]))
+        self.indexer(tf.constant([1]))
 
     def _indexer_decorator(func):
         """
