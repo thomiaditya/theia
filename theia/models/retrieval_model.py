@@ -270,7 +270,7 @@ class RetrievalModel():
             (candidates.batch(100), candidates.batch(100).map(self.model.candidate_model))))
 
         # Call the indexer to build the index.
-        self.indexer(tf.constant([1]))
+        self.indexer(ds.get_sample_input())
 
     def _indexer_decorator(func):
         """

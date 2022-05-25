@@ -49,7 +49,7 @@ class UserModel(tf.keras.Model):
         return tf.concat([
             self.user_model(inputs["user_id"]),
             self.timestamp_model(inputs["timestamp"]),
-            tf.reshape(self.normalized_timestamp(inputs["timestamp"]), [-1, 1])
+            tf.reshape(self.normalized_timestamp(inputs["timestamp"]), (-1, 1))
         ], axis=1)
 
 
@@ -154,9 +154,9 @@ class CandidateModel(tf.keras.Model):
 class RetrievalDefinition(tfrs.Model):
     def __init__(self):
         super().__init__()
-        self.query_model: tf.keras.Model = QueryModel([embedding_dimension])
+        self.query_model: tf.keras.Model = QueryModel(params.layer_size)
         self.candidate_model: tf.keras.Model = CandidateModel(
-            [embedding_dimension])
+            params.layer_size)
         self.task: tf.keras.layers.Layer = tfrs.tasks.Retrieval(
             metrics=tfrs.metrics.FactorizedTopK(
                 candidates=candidate.batch(128).map(self.candidate_model)

@@ -1,3 +1,4 @@
+from random import sample
 import tensorflow_datasets as tfds
 import numpy as np
 import tensorflow as tf
@@ -26,6 +27,21 @@ timestamp_buckets = np.linspace(
 
 tf.random.set_seed(42)
 shuffled = ratings.shuffle(100_000, seed=42, reshuffle_each_iteration=False)
+
+
+def get_sample_input():
+    """
+    Get sample input.
+    """
+
+    sample_rating = next(iter(ratings.take(1)))
+    sample_rating = {
+        "movie_title": tf.reshape(sample_rating["movie_title"], (1,)),
+        "user_id": tf.reshape(sample_rating["user_id"], (1,)),
+        "timestamp": tf.reshape(sample_rating["timestamp"], (1,)),
+    }
+
+    return sample_rating
 
 
 def get_train_data():
