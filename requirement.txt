@@ -4,6 +4,7 @@ alive-progress==2.4.1
 anyio==3.6.1
 asgiref==3.5.2
 astunparse==1.6.3
+autopep8==1.6.0
 cachetools==5.1.0
 certifi==2021.10.8
 charset-normalizer==2.0.12
@@ -35,7 +36,7 @@ kiwisolver==1.4.2
 libclang==14.0.1
 Markdown==3.3.7
 matplotlib==3.5.2
-numpy==1.22.3
+numpy==1.21.3
 oauthlib==3.2.0
 opt-einsum==3.3.0
 packaging==21.3
@@ -47,6 +48,7 @@ protobuf==3.20.1
 psutil==5.9.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
+pycodestyle==2.8.0
 pydantic==1.9.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
@@ -70,8 +72,11 @@ tensorflow==2.8.0
 tensorflow-datasets==4.5.2
 tensorflow-io-gcs-filesystem==0.25.0
 tensorflow-metadata==1.8.0
+tensorflow-recommenders==0.6.0
 termcolor==1.1.0
 tf-estimator-nightly==2.8.0.dev2021122109
+theia==0.0.1
+toml==0.10.2
 tqdm==4.64.0
 typing_extensions==4.2.0
 urllib3==1.26.9
