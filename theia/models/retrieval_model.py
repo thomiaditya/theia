@@ -11,13 +11,16 @@ import wandb
 
 
 class RetrievalModel():
-    def __init__(self):
+    def __init__(self, epochs=None):
         """
         Definition for the model definition in Retrieval Definition Class.
         """
         # Load the model definition from the config file.
         self.model = rd.RetrievalDefinition()
         self.logger = Logger()
+
+        if epochs is not None:
+            params.epochs = epochs
 
         # Prompt the user that the model is created.
         self.logger.write(
@@ -178,8 +181,7 @@ class RetrievalModel():
             zip(gradients, self.model.trainable_variables))
 
         # Return the metrics.
-        metrics = {
-            "loss": loss, "regularization_loss": regularization_loss, "total_loss": total_loss}
+        metrics = {"loss": loss, "total_loss": total_loss}
 
         if params.compute_metrics_on_train:
             metrics["factorized_top_k"] = np.array(
@@ -201,8 +203,7 @@ class RetrievalModel():
         total_loss = loss + regularization_loss
 
         # Return the metrics.
-        metrics = {"val_loss": loss, "val_regularization_loss": regularization_loss,
-                   "val_total_loss": total_loss}
+        metrics = {"val_loss": loss, "val_total_loss": total_loss}
 
         factorize_top_k = {metric.name: metric.result()
                            for metric in self.model.metrics}
