@@ -56,7 +56,6 @@ def get_sample_input():
 
     sample_rating = next(iter(ratings.take(1)))
     sample_rating = {
-        "therapist_id": tf.reshape(sample_rating["therapist_id"], (1,)),
         "user_id": tf.reshape(sample_rating["user_id"], (1,)),
     }
 
@@ -69,7 +68,7 @@ def get_train_data():
     """
 
     # Take the shuffled data and take the first 80,000.
-    train = shuffled.take(80000)
+    train = shuffled.take(500)
 
     return train
 
@@ -80,7 +79,7 @@ def get_eval_data():
     """
 
     # Get the last 20,000 ratings.
-    test = shuffled.skip(80000).take(20000)
+    test = shuffled.skip(500).take(100)
 
     return test
 

@@ -302,8 +302,11 @@ class RetrievalModel():
         """
         Recommend the candidates.
         """
+
         # Recommend the candidates.
-        _, candidates = self.indexer(tf.constant([index]))
+        _, candidates = self.indexer({
+            "user_id": tf.constant([index]),
+        })
 
         # Return the candidates.
         return candidates
