@@ -8,7 +8,7 @@ import numpy as np
 from . import dataset as ds, params
 
 # Get unique query and candidate and timestamp.
-unique_user_ids, unique_movie_titles = ds.get_unique_query_candidate()
+unique_user_ids, unique_therapist_ids = ds.get_unique_query_candidate()
 timestamps, timestamps_buckets = ds.get_timestamps()
 
 # Get candidate from dataset.
@@ -20,7 +20,7 @@ embedding_dimension = params.embedding_dimension
 class UserModel(tf.keras.Model):
     def __init__(self, use_timestamps=False):
         super(UserModel, self).__init__()
-        self.use_timestamps = use_timestamps
+        # self.use_timestamps = use_timestamps
         self.user_model = tf.keras.Sequential([
             tf.keras.layers.StringLookup(
                 vocabulary=unique_user_ids, mask_token=None),
@@ -29,28 +29,28 @@ class UserModel(tf.keras.Model):
                 len(unique_user_ids) + 1, embedding_dimension)
         ])
 
-        if self.use_timestamps:
-            self.timestamp_model = tf.keras.Sequential([
-                tf.keras.layers.Discretization(timestamps_buckets.tolist()),
-                tf.keras.layers.Embedding(
-                    len(timestamps_buckets) + 1, embedding_dimension)
-            ])
+        # if self.use_timestamps:
+        #     self.timestamp_model = tf.keras.Sequential([
+        #         tf.keras.layers.Discretization(timestamps_buckets.tolist()),
+        #         tf.keras.layers.Embedding(
+        #             len(timestamps_buckets) + 1, embedding_dimension)
+        #     ])
 
-            self.normalized_timestamp = tf.keras.layers.Normalization(
-                axis=None
-            )
+        #     self.normalized_timestamp = tf.keras.layers.Normalization(
+        #         axis=None
+        #     )
 
-            self.normalized_timestamp.adapt(timestamps)
+        #     self.normalized_timestamp.adapt(timestamps)
 
     def call(self, inputs):
-        if not self.use_timestamps:
-            return self.user_model(inputs["user_id"])
+        # if not self.use_timestamps:
+        return self.user_model(inputs["user_id"])
 
-        return tf.concat([
-            self.user_model(inputs["user_id"]),
-            self.timestamp_model(inputs["timestamp"]),
-            tf.reshape(self.normalized_timestamp(inputs["timestamp"]), (-1, 1))
-        ], axis=1)
+        # return tf.concat([
+        #     self.user_model(inputs["user_id"]),
+        #     self.timestamp_model(inputs["timestamp"]),
+        #     tf.reshape(self.normalized_timestamp(inputs["timestamp"]), (-1, 1))
+        # ], axis=1)
 
 
 class QueryModel(tf.keras.Model):
@@ -86,17 +86,17 @@ class QueryModel(tf.keras.Model):
         return self.dense_layers(feature_embedding)
 
 
-class MovieModel(tf.keras.Model):
+class TherapistModel(tf.keras.Model):
     def __init__(self):
-        super(MovieModel, self).__init__()
+        super().__init__()
 
         max_token = 10_000
 
         self.title_embedding = tf.keras.Sequential([
             tf.keras.layers.StringLookup(
-                vocabulary=unique_movie_titles, mask_token=None),
+                vocabulary=unique_therapist_ids, mask_token=None),
             tf.keras.layers.Embedding(
-                len(unique_movie_titles) + 1, embedding_dimension)
+                len(unique_therapist_ids) + 1, embedding_dimension)
         ])
 
         self.title_vectorizer = tf.keras.layers.TextVectorization(
@@ -120,10 +120,10 @@ class MovieModel(tf.keras.Model):
 
 
 class CandidateModel(tf.keras.Model):
-    """Model for encoding movies."""
+    """Model for encoding therapists."""
 
     def __init__(self, layer_sizes):
-        """Model for encoding movies.
+        """Model for encoding therapists.
 
         Args:
           layer_sizes:
@@ -132,7 +132,7 @@ class CandidateModel(tf.keras.Model):
         """
         super().__init__()
 
-        self.embedding_model = MovieModel()
+        self.embedding_model = TherapistModel()
 
         # Then construct the layers.
         self.dense_layers = tf.keras.Sequential()
@@ -167,13 +167,12 @@ class RetrievalDefinition(tfrs.Model):
         # We pick out the user features and pass them into the user model.
         user_embeddings = self.query_model({
             "user_id": features["user_id"],
-            "timestamp": features["timestamp"]
         })
 
-        # And pick out the movie features and pass them into the movie model,
+        # And pick out the therapist features and pass them into the therapist model,
         # getting embeddings back.
-        positive_movie_embeddings = self.candidate_model(
-            features["movie_title"])
+        positive_therapist_embeddings = self.candidate_model(
+            features["therapist_id"])
 
         # The task computes the loss and the metrics.
-        return self.task(user_embeddings, positive_movie_embeddings, compute_metrics=not training)
+        return self.task(user_embeddings, positive_therapist_embeddings, compute_metrics=not training)

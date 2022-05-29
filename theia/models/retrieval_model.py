@@ -90,7 +90,7 @@ class RetrievalModel():
         val_data = val_data.batch(params.eval_batch_size)
 
         # Get the number of batches.
-        num_batches = len(train_data) + len(val_data)
+        num_batches = len(list(train_data)) + len(list(val_data))
 
         # Start alive progress bar.
         with alive_bar(num_batches * params.epochs, ctrl_c=False, manual=False, dual_line=True, spinner="pulse") as bar:
@@ -131,11 +131,11 @@ class RetrievalModel():
 
                 # Log to wandb.
                 if params.use_wandb:
-                    wandb.log({**metrics, **val_metrics})
+                    wandb.log({**metrics})
                 else:
                     # Print the result metrics and epoch.
                     print("epoch {}: {}".format(
-                        epoch + 1, self.metrics_to_string({**metrics, **val_metrics})))
+                        epoch + 1, self.metrics_to_string({**metrics})))
 
                 # Save the checkpoint.
                 if params.checkpoint:

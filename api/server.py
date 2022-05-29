@@ -3,6 +3,7 @@
 # Author: Thomi Aditya Alhakiim
 
 import os
+import sys
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,6 +17,8 @@ def read_root():
     return {"Hello": "World"}
 
 
-if __name__ == "app":
-    uvicorn.run("api.server:app", host="127.0.0.1",
-                port=5000, log_level="info")
+def main():
+    uvicorn.run(app, host="0.0.0.0", port=5000)
+
+if __name__ == "__main__":
+    sys.exit(main())
