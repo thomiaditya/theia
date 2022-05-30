@@ -44,7 +44,10 @@ def main(cmd=None):
         sys.exit(0)
     
     if args.command == "server":
-        pass
+        from api import server
+        if args.server_command == "start":
+            server.main()
+            sys.exit(0)
     
     if args.command == "predict":
         from theia import RetrievalModel

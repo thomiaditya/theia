@@ -12,6 +12,7 @@ history
 __pycache__
 pyvenv.cfg
 .venv
+.env
 pip-selfcheck.json
 share
 .vscode

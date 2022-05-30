@@ -68,7 +68,7 @@ def get_train_data():
     """
 
     # Take the shuffled data and take the first 80,000.
-    train = shuffled.take(500)
+    train = shuffled.take(80_000)
 
     return train
 
@@ -79,7 +79,7 @@ def get_eval_data():
     """
 
     # Get the last 20,000 ratings.
-    test = shuffled.skip(500).take(100)
+    test = shuffled.skip(80_000).take(20_000)
 
     return test
 
