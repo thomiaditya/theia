@@ -2,38 +2,14 @@ from random import sample
 import tensorflow_datasets as tfds
 import numpy as np
 import tensorflow as tf
-import urllib.request
 import os
 import pandas as pd
+from . import download_from_gcs as dl
 
+credential = os.path.join(os.path.expanduser("~"), ".credentials", "zeta-resource-351216-13ae79674a6b.json")
 
-def get_file(filename, url):
-    """
-    Get file.
-    """
-
-    directory = os.path.join(os.path.expanduser("~"), ".data")
-    filepath = os.path.join(directory, filename)
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    if not os.path.exists(filepath):
-        print(f"Downloading {filename}...")
-        urllib.request.urlretrieve(url, filepath)
-
-    return filepath
-
-
-THERAPISTS_DATA_URL = "https://res.cloudinary.com/dhuvbrmgg/raw/upload/v1653642312/Data/therapists.csv"
-RATINGS_DATA_URL = "https://res.cloudinary.com/dhuvbrmgg/raw/upload/v1653642316/Data/ratings.csv"
-
-ratings_filepath = get_file("ratings.csv", RATINGS_DATA_URL)
-therapists_filepath = get_file(
-    "therapists.csv", THERAPISTS_DATA_URL)
-
-ratings = pd.read_csv(ratings_filepath)
-therapists = pd.read_csv(therapists_filepath)
+ratings = pd.read_csv(dl.get_byte_fileobj('zeta-resource-351216', 'theia-recommender', 'data/ratings.csv', credential))
+therapists = pd.read_csv(dl.get_byte_fileobj('zeta-resource-351216', 'theia-recommender', 'data/therapists.csv', credential))
 
 ratings = tf.data.Dataset.from_tensor_slices(dict(ratings))
 therapists = tf.data.Dataset.from_tensor_slices(dict(therapists))
