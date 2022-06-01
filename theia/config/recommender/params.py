@@ -14,10 +14,10 @@ model_id = os.environ.get('MODEL_ID', '01234')  # ID of the model
 checkpoint = True
 # Directory to checkpoint the model to if checkpoint_state is "epoch".
 checkpoint_dir = os.environ.get("CHECKPOINT_DIR", os.path.join(
-    os.getcwd(), ".history", "checkpoints"))
+    os.path.expanduser("~"), ".history", "checkpoints"))
 # Directory to save the model.
 save_dir = os.environ.get("SAVE_DIR", os.path.join(
-    os.getcwd(), ".history", "saved_models"))
+    os.path.expanduser("~"), ".history", "saved_models"))
 use_wandb = os.environ.get("USE_WANDB", False)
 
 # Model params
