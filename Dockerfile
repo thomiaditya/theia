@@ -1,7 +1,11 @@
-FROM python:3
+FROM python:3.9.0
 
-COPY . .
+WORKDIR /app
+
+COPY . /app
 
 RUN pip install .
 
-CMD [ "theia-recommender", "train" ]
+EXPOSE $PORT
+
+CMD [ "theia", "server", "start" ]
