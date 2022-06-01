@@ -2,6 +2,7 @@
 # Version: 1.0
 # Author: Thomi Aditya Alhakiim
 
+from imp import reload
 import os
 import sys
 import uvicorn
@@ -13,9 +14,10 @@ from theia import RetrievalModel
 import dotenv
 
 app = FastAPI()
-config = dotenv.load_dotenv()
 model = RetrievalModel()
 
+# Load the environment variables to os.environ
+dotenv.load_dotenv()
 
 @app.get("/", response_class=HTMLResponse)
 def root():
@@ -33,7 +35,7 @@ def root():
     """
 
 @app.get("/api/v1/recommend/{user_id}")
-def recommend(user_id: str):
+async def recommend(user_id: str):
     result = model.recommend(str(user_id), "last_saved")
     
     # Change the result of tf Tensor to a list
@@ -42,7 +44,7 @@ def recommend(user_id: str):
     return {"status": "success", "result": result}
 
 def main():
-    uvicorn.run("api.server:app", host="0.0.0.0", port=5000, reload=True)
+    uvicorn.run("api.server:app", host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), reload=os.environ.get("RELOAD", False))
 
 
 if __name__ == "__main__":

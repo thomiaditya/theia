@@ -3,16 +3,22 @@
 import os
 from pickletools import optimize
 import tensorflow as tf
+import dotenv
+
+# Load the environment variables to os.environ
+dotenv.load_dotenv()
 
 # Model settings
-name = "retrieval_model"  # Name of the model
-model_id = "546313-test"  # Model id
+name = os.environ.get('MODEL_NAME', 'recommender')  # Name of the model
+model_id = os.environ.get('MODEL_ID', '01234')  # ID of the model
 checkpoint = True
 # Directory to checkpoint the model to if checkpoint_state is "epoch".
-checkpoint_dir = os.path.join(os.getcwd(), "history", "checkpoints")
+checkpoint_dir = os.environ.get("CHECKPOINT_DIR", os.path.join(
+    os.getcwd(), ".history", "checkpoints"))
 # Directory to save the model.
-save_dir = os.path.join(os.getcwd(), "history", "saved_models")
-use_wandb = False  # Whether to use wandb for logging.
+save_dir = os.environ.get("SAVE_DIR", os.path.join(
+    os.getcwd(), ".history", "saved_models"))
+use_wandb = os.environ.get("USE_WANDB", False)
 
 # Model params
 embedding_dimension = 32  # Spesify the embedding dimension of the models.
