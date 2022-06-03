@@ -38,8 +38,8 @@ cd theia
 
 ```powershell
 # Activate the virtual environment
-python -m venv venv
-.\venv\Scripts\activate
+python -m venv .
+.\Scripts\activate
 pip install .
 ```
 
@@ -47,47 +47,44 @@ pip install .
 
 ```bash
 # Activate the virtual environment
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .
+source bin/activate
 pip3 install .
 ```
 
 After that you can run the application using below command
 
 ```bash
-# You can see the available arguments with the help command
-theia-recommender --help
+theia server start
 ```
 
 Above command will run the application in the current directory.
 
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-
-Give an example
-
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-
-Give an example
-
-```
+You can see all the command available by typing `theia -h`
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+This will cover the deployment of the application on a server using [Docker](https://www.docker.com/). So you need to have Docker installed on your machine (server/cloud).
+
+First, prepare some folders and files for the deployment,
+    - Credentials for the Google Cloud Storage in order to download the dataset from the cloud (This is internal to the project and not shared with anyone)
+    - Folder for the history of the model (It includes the saved model and checkpoints)
+    - Environment variables .env file (It contains the environment variables for the Docker container). See .env.example file for more details.
+
+You can run the following command after all the files are prepared
+
+```bash
+# Build the server image
+docker build -t theia-server .
+
+# Run the server image
+docker run -p 8080:WHATEVER_PORT_IN_ENV \
+    -v LOCAL_PATH_TO_CREDENTIAL:/root/.credentials \
+    -v LOCAL_PATH_TO_HISTORY:/root/.history \
+    --env-file LOCAL_ENV_PATH \
+    -d \
+    theia-server
+```
 
 ## Built With
 
