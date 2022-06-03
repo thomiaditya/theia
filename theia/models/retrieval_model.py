@@ -366,7 +366,9 @@ class RetrievalModel():
         indexer = tf.saved_model.load(path)
 
         # Recommend the candidates.
-        _, candidates = indexer(tf.constant([index]))
+        _, candidates = indexer({
+            "user_id": tf.constant([index]),
+        })
 
         # Return the candidates.
         return candidates

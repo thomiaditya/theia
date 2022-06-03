@@ -14,7 +14,6 @@ from theia import RetrievalModel
 import dotenv
 
 app = FastAPI()
-model = RetrievalModel()
 
 # Load the environment variables to os.environ
 dotenv.load_dotenv()
@@ -36,7 +35,7 @@ def root():
 
 @app.get("/api/v1/recommend/{user_id}")
 async def recommend(user_id: str):
-    result = model.recommend(str(user_id), "last_saved")
+    result = RetrievalModel.static_recommend(str(user_id))
     
     # Change the result of tf Tensor to a list
     result = result.numpy().tolist()[0]
