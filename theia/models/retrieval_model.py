@@ -34,7 +34,11 @@ class RetrievalModel():
         if params.use_wandb:
             # Initialize the wandb.
             _wandb = wandb.init(project=params.name,
-                                id=params.model_id, resume="allow")
+                                id=params.model_id, resume="allow", config={
+                                    "epochs": params.epochs,
+                                    "train_batch_size": params.train_batch_size,
+                                    "eval_batch_size": params.eval_batch_size,
+                                })
 
             self.logger.write(
                 "Wandb is initialized.", level="WARNING")
@@ -118,7 +122,7 @@ class RetrievalModel():
 
                 # Compute the metrics on the validation data.
                 for batch, features in enumerate(val_data):
-                    val_metrics, _ = self.eval_step(features, True)
+                    val_metrics, val_logs = self.eval_step(features, True)
 
                     # Metrics to string.
                     metrics_string = self.metrics_to_string(val_metrics)
@@ -131,7 +135,7 @@ class RetrievalModel():
 
                 # Log to wandb.
                 if params.use_wandb:
-                    wandb.log({**metrics})
+                    wandb.log({**metrics, **val_logs})
                 else:
                     # Print the result metrics and epoch.
                     print("epoch {}: {}".format(
@@ -183,9 +187,9 @@ class RetrievalModel():
         # Return the metrics.
         metrics = {"loss": loss, "total_loss": total_loss}
 
-        if params.compute_metrics_on_train:
-            metrics["factorized_top_k"] = np.array(
-                [metric.result() for metric in self.model.metrics])
+        # if params.compute_metrics_on_train:
+        #     metrics["factorized_top_k"] = np.array(
+        #         [metric.result() for metric in self.model.metrics])
 
         return metrics
 
