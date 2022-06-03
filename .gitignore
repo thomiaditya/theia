@@ -19,3 +19,4 @@ share
 build
 theia.*
 *.log
+.credentials
