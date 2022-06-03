@@ -67,9 +67,9 @@ You can see all the command available by typing `theia -h`
 This will cover the deployment of the application on a server using [Docker](https://www.docker.com/). So you need to have Docker installed on your machine (server/cloud).
 
 First, prepare some folders and files for the deployment,
-    - Credentials for the Google Cloud Storage in order to download the dataset from the cloud (This is internal to the project and not shared with anyone)
-    - Folder for the history of the model (It includes the saved model and checkpoints)
-    - Environment variables .env file (It contains the environment variables for the Docker container). See .env.example file for more details.
+- Credentials for the Google Cloud Storage in order to download the dataset from the cloud (This is internal to the project and not shared with anyone)
+- Folder for the history of the model (It includes the saved model and checkpoints)
+- Environment variables .env file (It contains the environment variables for the Docker container). See .env.example file for more details.
 
 You can run the following command after all the files are prepared
 
