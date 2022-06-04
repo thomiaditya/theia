@@ -44,9 +44,9 @@ def main(cmd=None):
         sys.exit(0)
     
     if args.command == "server":
-        from api import server
+        import api
         if args.server_command == "start":
-            server.main()
+            api.main()
             sys.exit(0)
     
     if args.command == "predict":
