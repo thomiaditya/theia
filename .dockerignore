@@ -20,3 +20,4 @@ build
 theia.*
 *.log
 .credentials
+docker-compose.y*ml
