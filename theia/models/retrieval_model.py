@@ -4,7 +4,7 @@ from typing import Dict
 import tensorflow as tf
 import tensorflow_recommenders as tfrs
 import numpy as np
-from ..config.recommender import retrieval_definition as rd, params, dataset as ds
+from ..config.recommender import retrieval_definition as rd, params
 from ..utils import Logger
 from alive_progress import alive_bar
 import wandb
@@ -15,6 +15,10 @@ class RetrievalModel():
         """
         Definition for the model definition in Retrieval Definition Class.
         """
+        from ..config.recommender import dataset as ds
+
+        self.ds = ds
+
         # Load the model definition from the config file.
         self.model = rd.RetrievalDefinition()
         self.logger = Logger()
@@ -86,11 +90,11 @@ class RetrievalModel():
             "Training {} is starting...".format(self.model), level="WARNING")
 
         # Get the train data.
-        train_data = ds.get_train_data()
+        train_data = self.ds.get_train_data()
         train_data = train_data.batch(params.train_batch_size)
 
         # Get the validation data.
-        val_data = ds.get_eval_data()
+        val_data = self.ds.get_eval_data()
         val_data = val_data.batch(params.eval_batch_size)
 
         # Get the number of batches.
@@ -228,7 +232,7 @@ class RetrievalModel():
             "Evaluation {} is starting...".format(self.model), level="WARNING")
 
         # Get the eval data.
-        eval_data = ds.get_eval_data()
+        eval_data = self.ds.get_eval_data()
         eval_data = eval_data.batch(params.eval_batch_size)
 
         num_batches = len(eval_data)
@@ -268,14 +272,14 @@ class RetrievalModel():
         self.indexer = tfrs.layers.factorized_top_k.BruteForce(
             self.model.query_model)
 
-        candidates = ds.get_candidate()
+        candidates = self.ds.get_candidate()
 
         # Recommends candidate of all the candidates.
         self.indexer.index_from_dataset(tf.data.Dataset.zip(
             (candidates.batch(100), candidates.batch(100).map(self.model.candidate_model))))
 
         # Call the indexer to build the index.
-        self.indexer(ds.get_sample_input())
+        self.indexer(self.ds.get_sample_input())
 
     def _indexer_decorator(func):
         """

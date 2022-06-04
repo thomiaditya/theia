@@ -9,7 +9,6 @@ import uvicorn
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-import tensorflow as tf
 from theia import RetrievalModel
 import dotenv
 
