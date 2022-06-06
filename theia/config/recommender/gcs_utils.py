@@ -110,13 +110,10 @@ def upload_fileobj(project: str,
            TIP: can be stored as env variable, e.g. os.getenv('GOOGLE_APPLICATION_CREDENTIALS_DSPLATFORM')
     :return: None
     """
-    from alive_progress import alive_bar
 
     credential = service_account.Credentials.from_service_account_file(service_account_credentials_path) if service_account_credentials_path else None
     
     storage_client = storage.Client(project=project, credentials=credential)
-
-    storage_client = storage.Client(project=project, credentials=service_account.Credentials.from_service_account_file(service_account_credentials_path)) if service_account_credentials_path else None
 
     # Get the bucket
     bucket = storage_client.get_bucket(bucket)
