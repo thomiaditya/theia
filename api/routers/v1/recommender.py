@@ -1,7 +1,7 @@
 from fastapi import APIRouter, BackgroundTasks
 from fastapi.responses import HTMLResponse
 from theia import RetrievalModel
-
+from ...middleware import authenticate
 
 router = APIRouter(
     prefix="/recommender",
@@ -26,6 +26,9 @@ async def recommend(user_id: str):
 
 
 @router.get("/train/{epochs}")
-async def train_model(epochs: int, background_tasks: BackgroundTasks):
+async def train_model(epochs: int, pin: str, background_tasks: BackgroundTasks):
+    authenticate(pin)
     background_tasks.add_task(train, epochs)
     return {"status": "success", "message": "Training started"}
+
+# TODO: Creating some authorization for training the model. We dont want to train the model without an admin privilege.
