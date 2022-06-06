@@ -2,7 +2,24 @@
 import os
 import sys
 import argparse
+from theia.config.recommender import gcs_utils as dl
+import dotenv
 
+# Load the environment variables to os.environ
+dotenv.load_dotenv()
+
+credential = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", None)
+
+# Download the history model from Google Storage if it does not exist.
+if not os.path.exists(os.path.join(os.path.expanduser("~"), ".history")):
+    print("History model does not exist. Downloading from Google Storage...")
+    dl.get_directory_to_fileobj(
+        project=os.environ.get("GOOGLE_PROJECT_ID", "zeta-resource-351216"),
+        bucket=os.environ.get("GOOGLE_BUCKET_NAME", "theia-recommender"),
+        path=".history",
+        destination_path=os.path.expanduser("~"),
+        service_account_credentials_path=credential
+    )
 
 def main(cmd=None):
     # Setting up the argument parser
