@@ -115,10 +115,11 @@ metadata:
           'f:observedGeneration': {}
           'f:readyReplicas': {}
           'f:replicas': {}
+          'f:unavailableReplicas': {}
           'f:updatedReplicas': {}
       manager: kube-controller-manager
       operation: Update
-      time: '2022-06-06T17:31:29Z'
+      time: '2022-06-06T18:12:03Z'
   name: theia
   namespace: default
 spec:
@@ -143,8 +144,7 @@ spec:
                 configMapKeyRef:
                   key: DB_STRING
                   name: theia-config-zc4c
-          image: >-
-            gcr.io/zeta-resource-351216/github.com/muhamadarif085/aljabar_assignment-
+          image: gcr.io/zeta-resource-351216/github.com/thomiaditya/theia
           imagePullPolicy: IfNotPresent
           name: theia-1
 ---
@@ -186,6 +186,22 @@ metadata:
       manager: vpa-recommender
       operation: Update
       time: '2022-06-06T15:25:12Z'
+    - apiVersion: autoscaling/v2beta1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:gcb-build-id': {}
+            'f:gcb-trigger-id': {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+          'f:labels':
+            'f:app.kubernetes.io/managed-by': {}
+            'f:app.kubernetes.io/name': {}
+            'f:app.kubernetes.io/version': {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: '2022-06-06T18:02:00Z'
   name: theia-hpa-pgn6
   namespace: default
 spec:
@@ -259,6 +275,21 @@ metadata:
       manager: glbc
       operation: Update
       time: '2022-06-06T17:08:01Z'
+    - apiVersion: v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            'f:gcb-build-id': {}
+            'f:gcb-trigger-id': {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+          'f:labels':
+            'f:app.kubernetes.io/managed-by': {}
+            'f:app.kubernetes.io/name': {}
+            'f:app.kubernetes.io/version': {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: '2022-06-06T18:02:01Z'
   name: theia-service
   namespace: default
 spec:
