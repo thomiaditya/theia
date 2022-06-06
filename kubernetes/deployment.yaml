@@ -27,26 +27,51 @@ metadata:
               'f:labels':
                 .: {}
                 'f:app': {}
+            # 'f:spec':
+            #   'f:containers':
+            #     'k:{"name":"theia-1"}':
+            #       .: {}
+            #       'f:env':
+            #         .: {}
+            #         'k:{"name":"DB_STRING"}':
+            #           .: {}
+            #           'f:name': {}
+            #           'f:valueFrom':
+            #             .: {}
+            #             'f:configMapKeyRef':
+            #               .: {}
+            #               'f:key': {}
+            #               'f:name': {}
             'f:spec':
               'f:containers':
                 'k:{"name":"theia-1"}':
                   .: {}
                   'f:env':
-                    .: {}
+                  .  : {}
                     'k:{"name":"DB_STRING"}':
-                      .: {}
+                    .  : {}
                       'f:name': {}
                       'f:valueFrom':
-                        .: {}
+                      .  : {}
                         'f:configMapKeyRef':
-                          .: {}
+                           : {}
                           'f:key': {}
                           'f:name': {}
+                    'k:{"name":"GOOGLE_APPLICATION_CREDENTIALS"}':
+                    .   : {}
+                      'f:name': {}
+                      'f:value': {}  
                   'f:imagePullPolicy': {}
                   'f:name': {}
                   'f:resources': {}
                   'f:terminationMessagePath': {}
                   'f:terminationMessagePolicy': {}
+                  'f:volumeMounts':
+                  .   : {}
+                     'k:{"mountPath":"/var/run/secret/cloud.google.com"}':
+                    .   : {}
+                       'f:mountPath': {}
+                       'f:name': {}
               'f:dnsPolicy': {}
               'f:restartPolicy': {}
               'f:schedulerName': {}
