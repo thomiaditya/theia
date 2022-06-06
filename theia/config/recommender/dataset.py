@@ -10,7 +10,10 @@ import dotenv
 # Load the environment variables to os.environ
 dotenv.load_dotenv()
 
-credential = os.path.join(os.path.expanduser("~"), ".credentials", os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"))
+if os.environ.get('GOOGLE_APPLICATION_CREDENTIALS') is not None:
+    credential = os.path.join(os.path.expanduser("~"), ".credentials", os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"))
+else:
+    credential = None
 
 ratings = pd.read_csv(dl.get_byte_fileobj('zeta-resource-351216', 'theia-recommender', 'data/ratings.csv', credential))
 therapists = pd.read_csv(dl.get_byte_fileobj('zeta-resource-351216', 'theia-recommender', 'data/therapists.csv', credential))
