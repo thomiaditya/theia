@@ -11,12 +11,10 @@ class Gender(str, Enum):
 
 # User Schema
 class UserSchema(pydantic.BaseModel):
-    username: str
+    id: int
+    name: str
     email: str
-    first_name: str
-    last_name: str
-    phone: str
-    country: str
+    phone: str = "000"
     age: int
     gender: Gender
     created_at: datetime = datetime.today()
