@@ -10,7 +10,7 @@ import dotenv
 # Load the environment variables to os.environ
 dotenv.load_dotenv()
 
-if os.environ.get('GOOGLE_APPLICATION_CREDENTIALS') is not None:
+if "GOOGLE_APPLICATION_CREDENTIALS" in os.environ:
     credential = os.path.join(os.path.expanduser("~"), ".credentials", os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"))
 else:
     credential = None
