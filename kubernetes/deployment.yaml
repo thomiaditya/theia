@@ -8,6 +8,36 @@ metadata:
       fieldsType: FieldsV1
       fieldsV1:
         'f:metadata':
+          'f:annotations':
+            'f:gcb-build-id': {}
+            'f:gcb-trigger-id': {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+          'f:labels':
+            'f:app.kubernetes.io/managed-by': {}
+            'f:app.kubernetes.io/name': {}
+            'f:app.kubernetes.io/version': {}
+        'f:spec':
+          'f:template':
+            'f:metadata':
+              'f:annotations':
+                .: {}
+                'f:gcb-build-id': {}
+                'f:gcb-trigger-id': {}
+              'f:labels':
+                'f:app.kubernetes.io/managed-by': {}
+                'f:app.kubernetes.io/name': {}
+                'f:app.kubernetes.io/version': {}
+            'f:spec':
+              'f:containers':
+                'k:{"name":"theia-1"}':
+                  'f:image': {}
+      manager: kubectl-client-side-apply
+      operation: Update
+      time: '2022-06-06T17:28:40Z'
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
           'f:labels':
             .: {}
             'f:app': {}
@@ -39,62 +69,41 @@ metadata:
                       'f:valueFrom':
                         .: {}
                         'f:configMapKeyRef':
-                           .: {}
+                          .: {}
                           'f:key': {}
                           'f:name': {}
                     'k:{"name":"GOOGLE_APPLICATION_CREDENTIALS"}':
-                       .: {}
+                      .: {}
                       'f:name': {}
-                      'f:value': {}  
+                      'f:value': {}
                   'f:imagePullPolicy': {}
                   'f:name': {}
                   'f:resources': {}
                   'f:terminationMessagePath': {}
                   'f:terminationMessagePolicy': {}
                   'f:volumeMounts':
-                     .: {}
-                     'k:{"mountPath":"/var/run/secret/cloud.google.com"}':
-                       .: {}
-                       'f:mountPath': {}
-                       'f:name': {}
+                    .: {}
+                    'k:{"mountPath":"/var/run/secret/cloud.google.com"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
               'f:dnsPolicy': {}
               'f:restartPolicy': {}
               'f:schedulerName': {}
               'f:securityContext': {}
               'f:terminationGracePeriodSeconds': {}
+              'f:volumes':
+                .: {}
+                'k:{"name":"service-account"}':
+                  .: {}
+                  'f:name': {}
+                  'f:secret':
+                    .: {}
+                    'f:defaultMode': {}
+                    'f:secretName': {}
       manager: GoogleCloudConsole
       operation: Update
-      time: '2022-06-06T15:24:54Z'
-    - apiVersion: apps/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:metadata':
-          'f:annotations':
-            'f:gcb-build-id': {}
-            'f:gcb-trigger-id': {}
-            'f:kubectl.kubernetes.io/last-applied-configuration': {}
-          'f:labels':
-            'f:app.kubernetes.io/managed-by': {}
-            'f:app.kubernetes.io/name': {}
-            'f:app.kubernetes.io/version': {}
-        'f:spec':
-          'f:template':
-            'f:metadata':
-              'f:annotations':
-                .: {}
-                'f:gcb-build-id': {}
-                'f:gcb-trigger-id': {}
-              'f:labels':
-                'f:app.kubernetes.io/managed-by': {}
-                'f:app.kubernetes.io/name': {}
-                'f:app.kubernetes.io/version': {}
-            'f:spec':
-              'f:containers':
-                'k:{"name":"theia-1"}':
-                  'f:image': {}
-      manager: kubectl-client-side-apply
-      operation: Update
-      time: '2022-06-06T17:28:40Z'
+      time: '2022-06-06T19:19:26Z'
     - apiVersion: apps/v1
       fieldsType: FieldsV1
       fieldsV1:
@@ -125,11 +134,10 @@ metadata:
           'f:observedGeneration': {}
           'f:readyReplicas': {}
           'f:replicas': {}
-          'f:unavailableReplicas': {}
           'f:updatedReplicas': {}
       manager: kube-controller-manager
       operation: Update
-      time: '2022-06-06T18:12:03Z'
+      time: '2022-06-06T19:20:25Z'
   name: theia
   namespace: default
 spec:
@@ -148,25 +156,25 @@ spec:
         app: theia
     spec:
       containers:
-      - env:
-        - name: DB_STRING
-          valueFrom:
-            configMapKeyRef:
-              key: DB_STRING
-              name: theia-config-zc4c
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /var/run/secret/cloud.google.com/service-account.json
-        image: gcr.io/zeta-resource-351216/github.com/thomiaditya/theia
-        imagePullPolicy: IfNotPresent
-        name: theia-1
-        volumeMounts:
-        - mountPath: /var/run/secret/cloud.google.com
-          name: service-account
+        - env:
+            - name: DB_STRING
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_STRING
+                  name: theia-config-zc4c
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/run/secret/cloud.google.com/service-account.json
+          image: gcr.io/zeta-resource-351216/github.com/thomiaditya/theia
+          imagePullPolicy: IfNotPresent
+          name: theia-1
+          volumeMounts:
+            - mountPath: /var/run/secret/cloud.google.com
+              name: service-account
       volumes:
-      - name: service-account
-        secret:
-          defaultMode: 420
-          secretName: theia-sa-key  
+        - name: service-account
+          secret:
+            defaultMode: 420
+            secretName: theia-sa-key
 ---
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
@@ -229,7 +237,7 @@ spec:
   metrics:
     - resource:
         name: cpu
-        targetAverageUtilization: 60
+        targetAverageUtilization: 80
       type: Resource
   minReplicas: 1
   scaleTargetRef:
