@@ -1,7 +1,6 @@
 # This is the hyperparameters of the model.
 
 import os
-from pickletools import optimize
 import tensorflow as tf
 import dotenv
 

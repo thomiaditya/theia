@@ -4,18 +4,20 @@ from typing import Dict
 import tensorflow as tf
 import tensorflow_recommenders as tfrs
 import numpy as np
-from ..config.recommender import retrieval_definition as rd, params
+from ..config.recommender import params, gcs_utils as up
 from ..utils import Logger
 from alive_progress import alive_bar
 import wandb
+import dotenv
 
+dotenv.load_dotenv()
 
 class RetrievalModel():
     def __init__(self, epochs=None):
         """
         Definition for the model definition in Retrieval Definition Class.
         """
-        from ..config.recommender import dataset as ds
+        from ..config.recommender import dataset as ds, retrieval_definition as rd
 
         self.ds = ds
 
@@ -148,6 +150,16 @@ class RetrievalModel():
                 # Save the checkpoint.
                 if params.checkpoint:
                     self.checkpoint_manager.save()
+        
+        # Upload the model to GCS.
+        print("Uploading the model to GCS...")
+        up.upload_fileobj(
+            project=os.environ.get("GOOGLE_PROJECT_ID", "zeta-resource-351216"),
+            bucket=os.environ.get("GOOGLE_BUCKET_NAME", "theia-recommender"),
+            directory_to_upload=os.path.expanduser("~/.history"),
+            destination_path=".history",
+            service_account_credentials_path=os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", None),
+        )
 
     def metrics_to_string(self, metrics) -> str:
         """

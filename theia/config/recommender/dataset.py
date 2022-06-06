@@ -4,16 +4,13 @@ import numpy as np
 import tensorflow as tf
 import os
 import pandas as pd
-from . import download_from_gcs as dl
+from . import gcs_utils as dl
 import dotenv
 
 # Load the environment variables to os.environ
 dotenv.load_dotenv()
 
-if "GOOGLE_APPLICATION_CREDENTIALS" in os.environ:
-    credential = os.path.join(os.path.expanduser("~"), ".credentials", os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"))
-else:
-    credential = None
+credential = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", None)
 
 ratings = pd.read_csv(dl.get_byte_fileobj('zeta-resource-351216', 'theia-recommender', 'data/ratings.csv', credential))
 therapists = pd.read_csv(dl.get_byte_fileobj('zeta-resource-351216', 'theia-recommender', 'data/therapists.csv', credential))
