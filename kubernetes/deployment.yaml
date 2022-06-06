@@ -148,15 +148,25 @@ spec:
         app: theia
     spec:
       containers:
-        - env:
-            - name: DB_STRING
-              valueFrom:
-                configMapKeyRef:
-                  key: DB_STRING
-                  name: theia-config-zc4c
-          image: gcr.io/zeta-resource-351216/github.com/thomiaditya/theia
-          imagePullPolicy: IfNotPresent
-          name: theia-1
+      - env:
+        - name: DB_STRING
+          valueFrom:
+            configMapKeyRef:
+              key: DB_STRING
+              name: theia-config-zc4c
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/run/secret/cloud.google.com/service-account.json
+        image: gcr.io/zeta-resource-351216/github.com/thomiaditya/theia
+        imagePullPolicy: IfNotPresent
+        name: theia-1
+        volumeMounts:
+        - mountPath: /var/run/secret/cloud.google.com
+          name: service-account
+      volumes:
+      - name: service-account
+        secret:
+          defaultMode: 420
+          secretName: theia-sa-key  
 ---
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
