@@ -66,7 +66,9 @@ def get_directory_to_fileobj(project: str,
     :return: file object (BytesIO)
     """
 
-    storage_client = storage.Client(project=project, credentials=service_account.Credentials.from_service_account_file(service_account_credentials_path)) if service_account_credentials_path else None
+    credential = service_account.Credentials.from_service_account_file(service_account_credentials_path) if service_account_credentials_path else None
+
+    storage_client = storage.Client(project=project, credentials=credential)
 
     # Get the bucket
     bucket = storage_client.get_bucket(bucket)
@@ -109,6 +111,10 @@ def upload_fileobj(project: str,
     :return: None
     """
     from alive_progress import alive_bar
+
+    credential = service_account.Credentials.from_service_account_file(service_account_credentials_path) if service_account_credentials_path else None
+    
+    storage_client = storage.Client(project=project, credentials=credential)
 
     storage_client = storage.Client(project=project, credentials=service_account.Credentials.from_service_account_file(service_account_credentials_path)) if service_account_credentials_path else None
 
