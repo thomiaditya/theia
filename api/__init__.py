@@ -8,7 +8,7 @@ dotenv.load_dotenv()
 
 def main():
     uvicorn.run("api.server:app", host="0.0.0.0", port=int(
-        os.environ.get("PORT", 5000)), reload=os.environ.get("RELOAD", False))
+        os.environ.get("PORT", 8080)), reload=os.environ.get("RELOAD", False))
 
 
 if __name__ == "__main__":
